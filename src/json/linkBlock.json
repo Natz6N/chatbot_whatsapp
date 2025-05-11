@@ -1,0 +1,60 @@
+{
+    "Group":{
+        "id": "123456789@g.us",
+        "dibuat": "2024-02-25T12:00:00Z",
+        "dibuat_oleh": "6281234567890",
+        "bot_admin": true,
+        "total_anggota": 50,
+        "owner": "6281234567890",
+        "status":{
+            "anti_bot": false,
+            "anti_hapus_pesan": true,
+            "anti_sembunyikan_tag": true,
+            "anti_tautan_grup_atau_saluran": true,
+            "anti_sekali_dilihat": false,
+            "stiker_otomatis": false,
+            "deteksi_log": true,
+            "naik_level_otomatis": true,
+            "bisukan_bot": false,
+            "anti_negara": false,
+            "wibu": false,
+            "selamat_datang": true,
+            "selamat_tinggal": true,
+            "peringatan": true
+        },
+        "allowed_commands": ["info", "help", "menu", "stiker"],
+        "restricted_commands": ["owner", "eval", "restart"],
+        "custom_messages": {
+            "welcome": "Selamat datang di grup {group_name}! Silakan perkenalkan diri Anda.",
+            "goodbye": "Selamat tinggal! Terima kasih telah menjadi bagian dari grup kami.",
+            "warning": "⚠️ Peringatan: Tindakan ini melanggar aturan grup."
+        },
+        "auto_reply": [
+            {
+                "trigger": "halo bot",
+                "response": "Hai! Ada yang bisa saya bantu?"
+            },
+            {
+                "trigger": "rules",
+                "response": "Berikut adalah aturan grup kami: 1. Hormati semua anggota, 2. Jangan spam, 3. Jangan kirim konten NSFW"
+            }
+        ]
+    },
+    "Settings": {
+        "global_block": {
+            "urls": ["bit.ly", "pornhub.com", "xnxx.com", "xvideos.com"],
+            "words": ["kontol", "memek", "bangsat", "anjing", "babi"],
+            "regex": ["https?:\\/\\/(?:www\\.)?(?:pornhub\\.com|xnxx\\.com|xvideos\\.com)\\/[^\\s]*"]
+        },
+        "exceptions": {
+            "urls": ["whatsapp.com", "github.com"],
+            "users": ["6281234567890", "6287654321098"]
+        },
+        "action": {
+            "delete": true,
+            "warn": true,
+            "kick_after_warnings": 3,
+            "timeout_minutes": 10
+        }
+    }
+}

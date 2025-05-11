@@ -1,0 +1,22 @@
+
+{
+    "logs": {
+      "error":{
+        "errorS": "Error",
+        "description": "Terjadi kesalahan pada sistem"
+      },
+      "warn": {
+        "title": "Warning",
+        "description": "Terjadi peringatan pada sistem"
+      },
+      "info": {
+        "runCommand": "Menjalankan command: ${command} dengan args: ${args.join(``)}",
+        "description": "Informasi pada sistem"
+      },
+      "debug": {
+        "title": "Debug",
+        "description": "Debugging pada sistem"
+      } 
+    }
+  }
+  

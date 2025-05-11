@@ -1,0 +1,125 @@
+{
+  "name": "chatbot_whatsapp",
+  "version": "0.0.5",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "mocha test.js",
+    "start": "node bot.js",
+    "dev": "nodemon --config nodemon.json bot.js",
+    "prod": "pm2 start bot.js --name whatsapp-bot",
+    "stop": "pm2 stop whatsapp-bot",
+    "restart": "pm2 restart whatsapp-bot",
+    "monitor": "pm2 monit whatsapp-bot",
+    "logs": "pm2 logs whatsapp-bot",
+    "delete": "pm2 delete whatsapp-bot",
+    "update": "pm2 update whatsapp-bot"
+  },
+  "keywords": [
+    "whatsapp",
+    "chatbot",
+    "nodejs",
+    "javascript",
+    "express",
+    "baileys",
+    "axios",
+    "dotenv",
+    "express",
+    "qrcode-terminal"
+  ],
+  "owner": {
+    "owner1": {
+      "name": "Nat zsixn",
+      "email": "natsixn@gmail.com",
+      "url": "https://github.com/natsixn"
+    },
+    "owner2": {
+      "name": "skyDev",
+      "email": "skydev@gmail.com",
+      "url": "https://github.com/skydev"
+    }
+  },
+  "author": {
+    "author1": {
+      "name": "Natzsixn",
+      "email": "natsixn@gmail.com",
+      "url": "https://github.com/natsixn",
+      "roles": [
+        "backend whatsapp bot & web whatsapp bot",
+        "Ai design"
+      ]
+    }
+  },
+  "license": "ISC",
+  "description": "Chatbot whatsapp yang dimaksudkan untuk membantu dalam mengelola whatsapp bot dan untuk bersenang senang dengan ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/natsixn/Chatbot_whatsapp.git"
+  },
+  "homepage": "https://github.com/natsixn/Chatbot_whatsapp.git",
+  "bugs": {
+    "url": "https://github.com/natsixn/Chatbot_whatsapp/issues"
+  },
+  "features": {
+    "feature1": {
+      "name": "whatsapp bot",
+      "description": "Chatbot whatsapp yang dimaksudkan untuk membantu dalam mengelola whatsapp bot dan untuk bersenang senang dengan ai"
+    },
+    "feature2": {
+      "name": "web whatsapp bot",
+      "description": "Chatbot whatsapp yang dimaksudkan untuk membantu dalam mengelola whatsapp bot dan untuk bersenang senang dengan ai"
+    }
+  },
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@google/generative-ai": "^0.22.0",
+    "@hapi/boom": "^10.0.1",
+    "@tobyg74/tiktok-api-dl": "^1.2.8",
+    "@whiskeysockets/baileys": "^6.7.14",
+    "@yemreak/yt-dlp": "^1.1.5",
+    "acrcloud": "^1.4.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "axios": "^1.8.2",
+    "canvas": "^2.11.2",
+    "cheerio": "^1.0.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
+    "ffmpeg-static": "^5.2.0",
+    "filesize": "^10.1.6",
+    "fluent-ffmpeg": "^2.1.3",
+    "form-data": "^4.0.2",
+    "fs-extra": "^11.3.0",
+    "google-it": "^1.6.4",
+    "google-libphonenumber": "^3.2.40",
+    "https-proxy-agent": "^7.0.6",
+    "jsdom": "^25.0.1",
+    "link-preview-js": "^3.0.12",
+    "moment-timezone": "^0.5.46",
+    "mongoose": "^8.14.1",
+    "mysql2": "^3.12.0",
+    "node-fetch": "^3.3.2",
+    "node-webpmux": "^3.2.0",
+    "onnxruntime-node": "^1.20.0",
+    "opencage-api-client": "^1.0.7",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "punycode": "npm:punycode.js@2.3.1",
+    "puppeteer": "^24.3.0",
+    "qrcode-terminal": "^0.12.0",
+    "qs": "^6.13.1",
+    "random-useragent": "^0.5.0",
+    "sharp": "^0.32.6",
+    "systeminformation": "^5.23.21",
+    "user-agents": "^1.1.465",
+    "uuid": "^11.0.3",
+    "wikipedia": "^2.1.2",
+    "winston": "^3.17.0",
+    "youtube-dl-exec": "^3.0.10",
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "mocha": "^11.1.0"
+  }
+}

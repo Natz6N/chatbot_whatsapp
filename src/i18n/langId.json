@@ -1,0 +1,118 @@
+{
+  "logs": {
+    "error": {
+      "error1": "Command harus memiliki pattern dan handler",
+      "error2": "Terjadi kesalahan pada sistem database",
+      "error3": "Terjadi kesalahan pada koneksi server",
+      "error4": "Terjadi kesalahan pada validasi input",
+      "error5": "File tidak ditemukan atau rusak",
+      "error6": "Kesalahan autentikasi pengguna",
+      "error7": "Rate limit terlampaui",
+      "error8": "Format data tidak valid",
+      "error9": "Tidak dapat membaca ascii art",
+      "error10": "Tidak dapat membaca file config"
+    },
+    "warn": {
+      "title": "Warning",
+      "description": "Terjadi peringatan pada sistem",
+      "lowMemory": "Penggunaan memori tinggi",
+      "highCpu": "Penggunaan CPU tinggi",
+      "slowResponse": "Respon server lambat",
+      "invalidInput": "Input tidak sesuai format yang diharapkan"
+    },
+    "info": {
+      "runCommand": "Menjalankan command: ${command} dengan args: ${args.join(``)}",
+      "description": "Informasi pada sistem",
+      "userLogin": "Pengguna ${username} telah login",
+      "userLogout": "Pengguna ${username} telah logout",
+      "fileUpload": "File ${filename} berhasil diunggah",
+      "dataSync": "Sinkronisasi data selesai",
+      "backup": "Backup sistem berhasil dibuat",
+      "update": "Sistem berhasil diperbarui ke versi ${version}",
+      "rpg": {
+        "profile": "📋 *Profil Karakter*\n\nNama: ${name}\nKelas: ${className}\nLevel: ${level}\nGold: ${gold}\nHP: ${hp}/${maxHp}\nMP: ${mp}/${maxMp}\nStamina: ${stamina}/${maxStamina}",
+        "inventory": "🎒 *Inventory*\n\nBerat: ${weight}/${maxWeight}\n\n*Items:*\n${items}\n\n*Equipment:*\nWeapon: ${weapon}\nArmor: ${armor}\nAccessory: ${accessory}"
+      }
+    },
+    "debug": {
+      "title": "Debug",
+      "description": "Debugging pada sistem",
+      "database": {
+        "query": "Menjalankan query: ${query}",
+        "connection": "Status koneksi database: ${status}",
+        "performance": "Waktu eksekusi query: ${time}ms"
+      },
+      "cache": {
+        "hit": "Cache hit untuk key: ${key}",
+        "miss": "Cache miss untuk key: ${key}",
+        "clear": "Cache dibersihkan"
+      },
+      "api": {
+        "request": "Request API ke ${endpoint}",
+        "response": "Response dari ${endpoint}: ${status}",
+        "latency": "Latensi API: ${time}ms"
+      }
+    },
+    "success": {
+      "title": "Sukses",
+      "operationComplete": "Operasi berhasil diselesaikan",
+      "dataSaved": "Data berhasil disimpan",
+      "configUpdated": "Konfigurasi berhasil diperbarui"
+    },
+    "system": {
+      "startup": "Sistem sedang dimulai",
+      "shutdown": "Sistem sedang dimatikan",
+      "maintenance": "Sistem dalam mode pemeliharaan",
+      "status": {
+        "online": "Sistem online",
+        "offline": "Sistem offline",
+        "partial": "Sebagian layanan tidak tersedia"
+      }
+    }
+  },
+  "bot": {
+    "opening": "hello everyone! im oblivinx bot",
+    "welcome": "welcome to oblivinx bot! please enjoy the services available.",
+    "bug": "if you encounter any bugs, please do not hesitate to reach out to the contacts listed.",
+    "contribute": "you can also contribute to the development of this bot by forking our repository on github and submitting a pull request.",
+    "thankyou": "thank you for using oblivinx bot, hope it helps! 🚀",
+    "contact": "=========================== Contact Developer ============================",
+    "name": "Name ${process.env.OWNER1_NAME || 'Natz'}",
+    "phone": "Phone ${process.env.PHONE_NUMBER || '081910058235'}",
+    "email": "Email ${process.env.OWNER1_EMAIL || 'nat0zxn99@gmail.com'}",
+    "github": "GitHub ${process.env.OWNER1_GITHUB || 'https://github.com/maousamaNatz'}",
+    "instagram": "Instagram ${process.env.OWNER1_INSTAGRAM || 'patch.cpp'}",
+    "version": "Version ${process.env.OWNER1_VERSION || '1.0.0'}",
+    "author": "Author ${process.env.OWNER1_AUTHOR || 'Natz'}",
+    "license": "License ${process.env.OWNER1_LICENSE || 'MIT'}",
+    "description": "Description ${process.env.OWNER1_DESCRIPTION || 'Oblivinx Bot is a multi-functional bot that can help you with various tasks.'}",
+    "contribute": "you can also contribute to the development of this bot by forking our repository on github and submitting a pull request.",
+    "thankyou": "thank you for using oblivinx bot, hope it helps! 🚀",
+    "contact": "=========================== Contact Developer ============================"
+  },
+  "commands": {
+    "rpg": {
+      "createchar": "Buat karakter baru dengan format: !createchar <nama> <kelas>\nKelas yang tersedia: warrior, mage, assassin, archer",
+      "profile": "Menampilkan profil karakter",
+      "battle": "Memulai pertarungan dengan monster",
+      "skill": "Menggunakan skill dalam pertarungan",
+      "inventory": "Menampilkan inventory karakter"
+    }
+  },
+  "errors": {
+    "rpg": {
+      "no_character": "Kamu belum memiliki karakter! Gunakan !createchar untuk membuat karakter baru.",
+      "invalid_class": "Kelas tidak valid! Kelas yang tersedia: warrior, mage, assassin, archer",
+      "in_battle": "Kamu sedang dalam pertarungan! Gunakan !attack untuk menyerang.",
+      "skill_fail": "Gagal menggunakan skill! Pastikan MP cukup dan skill tersedia."
+    }
+  },
+  "guides": {
+    "rpg": {
+      "character_created": "Karakter berhasil dibuat!\nNama: ${name}\nKelas: ${className}\nHP: ${hp}\nMP: ${mp}\nStamina: ${stamina}",
+      "battle_start": "Pertarungan dimulai!\nMusuh: ${enemyName} (Level ${level})\nHP: ${hp}/${maxHp}\nAttack: ${attack}\nDefense: ${defense}",
+      "victory": "Kamu menang!\nMendapatkan ${exp} EXP dan ${gold} Gold!",
+      "defeat": "Kamu kalah dalam pertarungan!"
+    }
+  }
+}

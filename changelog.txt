@@ -1,0 +1,184 @@
+*0.0.1*
+*#Added*
+- Botinfo
+- Optimasi bot
+- Group setting
+- Memo setting
+- Setup bot dasar
+- Tools dasar 
+- Integrasi AI (GPT, Claude, Gemini, Copilot, O1, Natz Model)
+
+*#Changed*
+Tidak Ada
+
+*#Fixed*
+Tidak Ada
+
+*#Remove*
+Tidak Ada
+
+*0.0.2*
+*#Added*
+- Botinfo detail
+- Setup Botinfo lanjutan
+- YouTube downloader
+- Tools tambahan (info gempa, Pinterest search, Wikipedia)
+
+*#Changed*
+Tidak Ada
+
+*#Fixed*
+- Perbaikan bug pada memo setting
+
+*#Remove*
+Tidak Ada
+
+*0.0.3*
+*#Added*
+Tidak Ada
+
+*#Changed*
+- Perbaikan bug pada tools wiki
+- Optimasi YouTube downloader
+
+*#Fixed*
+Tidak Ada
+
+*#Remove*
+- Fitur AI (karena pemblokiran API)
+
+*0.0.4*
+*#Added*
+- Sistem manajemen permintaan bersamaan
+- Timeout otomatis untuk permintaan
+- Backup otomatis session setiap 1 jam
+- Fitur debugging terperinci
+- Integrasi API keamanan tambahan
+
+*#Changed*
+- Peningkatan stabilitas penyimpanan session
+- Optimasi log level untuk debugging
+
+*#Fixed*
+- Perbaikan memory leak
+- Penanganan error yang lebih robust
+
+*#Remove*
+- Dependensi yang tidak terpakai
+
+# Changelog v0.0.5 - 2024-06-15
+
+## 🛠️ Perbaikan Utama
+### 🔒 Keamanan
+- Tambah sistem autentikasi multi-file untuk session management
+- Perbaikan vulnerability pada handler permission
+- Enkripsi credentials database dengan algoritma AES-256
+
+### ⚡ Performa
+- Optimasi memory usage dengan in-memory store
+- Implementasi rate limiting (5 req/detik)
+- Session cleanup otomatis setiap 6 jam
+
+## 🌟 Fitur Baru
+### 🤖 AI
+- Integrasi DALL-E 3 untuk image generation
+- Support GPT-4 Turbo dengan context window 128k
+- Tambah command `!ask` untuk general purpose AI
+
+### 🎮 Game & RPG
+- Sistem RPG sticker dengan progression system
+- 15+ mini games (tebak gambar, catur, tic-tac-toe)
+- Sticker customization dengan template RPG
+- Leaderboard dan XP system untuk game
+
+### 📥 Downloader
+- Support download Instagram Reels/Story
+- Tambah fitur batch download untuk YouTube
+- Format selection untuk kualitas video (HD/SD)
+
+### 🛡️ Hacking & Tools
+- Tambah module hacking dasar (port scanner, ping)
+- Network security checker
+- Tools generate fake data untuk testing
+- Password strength checker
+
+## 🗃️ Database
+- Migrasi schema database (tambahkan tabel `bot_instances`)
+- Backup otomatis setiap hari ke cloud storage
+- Indexing untuk query yang sering digunakan
+- Tambah tabel `game_leaderboard` dan `user_xp`
+
+## 🐛 Perbaikan Bug
+- Perbaikan session stuck setelah reconnect
+- Handle ECONNRESET pada WebSocket
+- Perbaikan memory leak di module games
+- Fix XP calculation bug di RPG system
+
+## 📦 Dependensi
+- Update Baileys ke versi 5.4.1
+- Tambah library sharp@0.36.0 untuk image processing
+- Upgrade mysql2 ke versi 3.9.1
+- Tambah package node-canvas@2.11.2 untuk sticker RPG
+- Install module nmap@0.0.10 untuk network scanning
+
+## 📄 Dokumentasi
+- Tambah panduan kontribusi di CONTRIBUTING.md
+- Update dokumentasi API di `/docs`
+- Tambah FAQ untuk error umum
+- Tambah tutorial pembuatan sticker RPG
+
+## ⚠️ Breaking Changes
+- Wajib run `npm run migrate` setelah update
+- Ubah format config database di `.env`
+- Hapus support Node.js < 18.x
+- Perlu install dependensi baru canvas dan nmap
+
+# Changelog v0.0.6 - 2024-02-25
+
+## 🌟 Fitur Baru
+### 🐛 Debug Mode
+- Tambah command `!debug` untuk mengaktifkan/menonaktifkan mode debug
+- Implementasi toggle debug runtime tanpa restart bot
+- Penyimpanan status debug di file .env
+- Optimasi level logging berdasarkan status debug
+
+### 🔄 Sistem Logging
+- Perbaikan format log dengan emoji dan warna
+- Filter log berdasarkan status debug
+- Pemisahan log untuk Baileys dan bot utama
+
+## 🐛 Perbaikan Bug
+- Perbaikan memory leak pada sistem logging
+- Optimasi penggunaan memori saat debug dinonaktifkan
+
+## 📦 Dependensi
+- Tidak ada perubahan
+
+## 📄 Dokumentasi
+- Update README.md dengan informasi fitur debug baru
+- Tambah panduan penggunaan debug mode
+
+## ⚠️ Breaking Changes
+- Tidak ada
+
+# Changelog v0.0.7 - 2024-02-25
+
+## 🔄 Penyederhanaan Sistem
+### 📋 Sistem Logging
+- Penyederhanaan format log menjadi lebih ringkas
+- Pengurangan level log menjadi error, warn, info, debug
+- Penghapusan tampilan emoji dan styling berlebihan
+- Konsolidasi file log menjadi lebih sederhana
+- Penggunaan API logger yang lebih mudah
+
+### 🐛 Debug Mode
+- Penyederhanaan command debug
+- Format pesan debug yang lebih ringkas
+- Pengurangan informasi debug yang tidak perlu
+
+## 🐛 Perbaikan
+- Optimasi penggunaan memori dengan format log yang lebih ringan
+- Pembersihan kode logger yang tidak perlu
+
+## 📄 Dokumentasi
+- Update panduan penggunaan debug mode yang disederhanakan

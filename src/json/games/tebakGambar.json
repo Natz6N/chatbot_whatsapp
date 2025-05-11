@@ -1,0 +1,90 @@
+{
+  "data": [
+    {
+      "url": "https://i.ibb.co/JRzQkYB/tebak-gambar-1.jpg",
+      "answer": "kucing",
+      "hint": "Hewan peliharaan yang suka makan ikan"
+    },
+    {
+      "url": "https://i.ibb.co/FXrm3kw/tebak-gambar-2.jpg",
+      "answer": "mobil",
+      "hint": "Kendaraan beroda empat"
+    },
+    {
+      "url": "https://i.ibb.co/tJg10sZ/tebak-gambar-3.jpg",
+      "answer": "pesawat",
+      "hint": "Kendaraan yang terbang di udara"
+    },
+    {
+      "url": "https://i.ibb.co/SrkVDMG/tebak-gambar-4.jpg",
+      "answer": "komputer",
+      "hint": "Perangkat elektronik untuk bekerja"
+    },
+    {
+      "url": "https://i.ibb.co/ZVNwczB/tebak-gambar-5.jpg",
+      "answer": "televisi",
+      "hint": "Perangkat elektronik untuk menonton acara"
+    },
+    {
+      "url": "https://i.ibb.co/kSFfQ3r/tebak-gambar-6.jpg",
+      "answer": "bunga",
+      "hint": "Bagian dari tumbuhan yang indah dan harum"
+    },
+    {
+      "url": "https://i.ibb.co/mC8Y9cT/tebak-gambar-7.jpg",
+      "answer": "jeruk",
+      "hint": "Buah yang berwarna oranye dan berasa asam-manis"
+    },
+    {
+      "url": "https://i.ibb.co/7v2ZJ7g/tebak-gambar-8.jpg",
+      "answer": "handphone",
+      "hint": "Alat komunikasi yang bisa dibawa kemana-mana"
+    },
+    {
+      "url": "https://i.ibb.co/PxtHw2w/tebak-gambar-9.jpg",
+      "answer": "sepeda",
+      "hint": "Kendaraan beroda dua yang dikayuh"
+    },
+    {
+      "url": "https://i.ibb.co/hdY49sp/tebak-gambar-10.jpg",
+      "answer": "gunung",
+      "hint": "Bentuk permukaan bumi yang menjulang tinggi"
+    },
+    {
+      "url": "https://i.ibb.co/nM1bMhT/tebak-gambar-11.jpg",
+      "answer": "pantai",
+      "hint": "Tempat rekreasi di pinggir laut"
+    },
+    {
+      "url": "https://i.ibb.co/5FwN2Rx/tebak-gambar-12.jpg",
+      "answer": "buku",
+      "hint": "Terdiri dari kumpulan kertas yang dijilid"
+    },
+    {
+      "url": "https://i.ibb.co/kXGDJsG/tebak-gambar-13.jpg",
+      "answer": "jam",
+      "hint": "Alat untuk menunjukkan waktu"
+    },
+    {
+      "url": "https://i.ibb.co/QHY3K4C/tebak-gambar-14.jpg",
+      "answer": "ayam",
+      "hint": "Hewan ternak yang bisa bertelur"
+    },
+    {
+      "url": "https://i.ibb.co/JvbL19Q/tebak-gambar-15.jpg",
+      "answer": "sapi",
+      "hint": "Hewan ternak penghasil susu"
+    }
+  ],
+  "metadata": {
+    "lastUpdate": "2024-02-25T15:30:00Z",
+    "version": "1.0.0",
+    "totalItems": 15,
+    "difficulty": "medium",
+    "timeLimit": 60,
+    "points": {
+      "correct": 10,
+      "withHint": 5
+    }
+  }
+}

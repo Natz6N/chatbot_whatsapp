@@ -1,0 +1,212 @@
+{
+  "dungeons": [
+    {
+      "id": "forest_cave",
+      "name": "Gua Hutan Terlarang",
+      "level": 1,
+      "description": "Gua gelap yang terletak di dalam hutan terlarang. Banyak monster lemah berkeliaran di sini.",
+      "monsters": [
+        {
+          "id": "slime",
+          "name": "Slime",
+          "hp": 30,
+          "attack": 5,
+          "defense": 2,
+          "exp": 10,
+          "gold": 15,
+          "dropItems": [
+            {"id": "slime_gel", "name": "Slime Gel", "rate": 0.7},
+            {"id": "small_potion", "name": "Small Potion", "rate": 0.3}
+          ]
+        },
+        {
+          "id": "goblin",
+          "name": "Goblin",
+          "hp": 50,
+          "attack": 12,
+          "defense": 5,
+          "exp": 25,
+          "gold": 30,
+          "dropItems": [
+            {"id": "goblin_ear", "name": "Telinga Goblin", "rate": 0.6},
+            {"id": "rusty_knife", "name": "Pisau Berkarat", "rate": 0.4}
+          ]
+        }
+      ],
+      "boss": {
+        "id": "forest_troll",
+        "name": "Forest Troll",
+        "hp": 300,
+        "attack": 25,
+        "defense": 15,
+        "exp": 200,
+        "gold": 250,
+        "skills": [
+          {"name": "Slam", "damage": 40, "cooldown": 3},
+          {"name": "Roar", "effect": "stun", "duration": 1, "cooldown": 5}
+        ],
+        "dropItems": [
+          {"id": "troll_heart", "name": "Jantung Troll", "rate": 0.8},
+          {"id": "troll_club", "name": "Gada Troll", "rate": 0.5},
+          {"id": "forest_gem", "name": "Permata Hutan", "rate": 0.1}
+        ]
+      },
+      "rewards": {
+        "exp": 500,
+        "gold": 1000,
+        "items": [
+          {"id": "forest_key", "name": "Kunci Hutan", "quantity": 1}
+        ]
+      },
+      "requiredLevel": 1,
+      "requiredItems": []
+    },
+    {
+      "id": "abandoned_mine",
+      "name": "Tambang Terbengkalai",
+      "level": 5,
+      "description": "Tambang tua yang ditinggalkan para penambang setelah serangan monster. Dipenuhi oleh monster batu dan goblin.",
+      "monsters": [
+        {
+          "id": "rock_elemental",
+          "name": "Rock Elemental",
+          "hp": 100,
+          "attack": 15,
+          "defense": 20,
+          "exp": 50,
+          "gold": 60,
+          "dropItems": [
+            {"id": "rock_core", "name": "Inti Batu", "rate": 0.6},
+            {"id": "mineral_dust", "name": "Debu Mineral", "rate": 0.8}
+          ]
+        },
+        {
+          "id": "goblin_miner",
+          "name": "Goblin Miner",
+          "hp": 80,
+          "attack": 25,
+          "defense": 10,
+          "exp": 60,
+          "gold": 70,
+          "dropItems": [
+            {"id": "mining_pick", "name": "Beliung Tambang", "rate": 0.5},
+            {"id": "raw_gold", "name": "Emas Mentah", "rate": 0.3}
+          ]
+        }
+      ],
+      "boss": {
+        "id": "golem",
+        "name": "Ancient Golem",
+        "hp": 800,
+        "attack": 60,
+        "defense": 30,
+        "exp": 500,
+        "gold": 700,
+        "skills": [
+          {"name": "Stone Throw", "damage": 80, "cooldown": 2},
+          {"name": "Ground Smash", "damage": 100, "effect": "stun", "duration": 2, "cooldown": 4},
+          {"name": "Rock Shield", "effect": "defense_up", "value": 50, "duration": 3, "cooldown": 5}
+        ],
+        "dropItems": [
+          {"id": "golem_core", "name": "Inti Golem", "rate": 0.7},
+          {"id": "ancient_gear", "name": "Roda Gigi Kuno", "rate": 0.5},
+          {"id": "mine_map", "name": "Peta Tambang", "rate": 0.2}
+        ]
+      },
+      "rewards": {
+        "exp": 1500,
+        "gold": 3000,
+        "items": [
+          {"id": "mine_key", "name": "Kunci Tambang", "quantity": 1},
+          {"id": "gem_dust", "name": "Debu Permata", "quantity": 5}
+        ]
+      },
+      "requiredLevel": 5,
+      "requiredItems": [
+        {"id": "forest_key", "name": "Kunci Hutan", "quantity": 1}
+      ]
+    },
+    {
+      "id": "dragon_lair",
+      "name": "Sarang Naga",
+      "level": 10,
+      "description": "Sarang naga yang terletak di puncak gunung berapi. Sangat berbahaya, hanya pemain berpengalaman yang bisa bertahan.",
+      "monsters": [
+        {
+          "id": "fire_lizard",
+          "name": "Fire Lizard",
+          "hp": 200,
+          "attack": 40,
+          "defense": 25,
+          "exp": 150,
+          "gold": 200,
+          "dropItems": [
+            {"id": "lizard_scale", "name": "Sisik Kadal Api", "rate": 0.8},
+            {"id": "fire_essence", "name": "Esensi Api", "rate": 0.5}
+          ]
+        },
+        {
+          "id": "lava_golem",
+          "name": "Lava Golem",
+          "hp": 350,
+          "attack": 55,
+          "defense": 40,
+          "exp": 300,
+          "gold": 350,
+          "dropItems": [
+            {"id": "lava_core", "name": "Inti Lava", "rate": 0.6},
+            {"id": "volcanic_rock", "name": "Batu Vulkanik", "rate": 0.7}
+          ]
+        }
+      ],
+      "boss": {
+        "id": "elder_dragon",
+        "name": "Elder Dragon",
+        "hp": 2000,
+        "attack": 120,
+        "defense": 80,
+        "exp": 2000,
+        "gold": 5000,
+        "skills": [
+          {"name": "Fire Breath", "damage": 200, "effect": "burn", "duration": 3, "cooldown": 3},
+          {"name": "Wing Slash", "damage": 150, "effect": "bleed", "duration": 2, "cooldown": 2},
+          {"name": "Dragon Roar", "effect": "fear", "duration": 2, "cooldown": 5},
+          {"name": "Tail Swipe", "damage": 180, "effect": "knockback", "cooldown": 4}
+        ],
+        "dropItems": [
+          {"id": "dragon_scale", "name": "Sisik Naga", "rate": 0.9},
+          {"id": "dragon_heart", "name": "Jantung Naga", "rate": 0.4},
+          {"id": "dragon_tooth", "name": "Gigi Naga", "rate": 0.6},
+          {"id": "dragon_soul", "name": "Jiwa Naga", "rate": 0.1}
+        ]
+      },
+      "rewards": {
+        "exp": 5000,
+        "gold": 10000,
+        "items": [
+          {"id": "dragon_armor", "name": "Armor Naga", "quantity": 1},
+          {"id": "dragon_sword", "name": "Pedang Naga", "quantity": 1},
+          {"id": "legend_title", "name": "Gelar Penakluk Naga", "quantity": 1}
+        ]
+      },
+      "requiredLevel": 10,
+      "requiredItems": [
+        {"id": "mine_key", "name": "Kunci Tambang", "quantity": 1},
+        {"id": "dragon_map", "name": "Peta Sarang Naga", "quantity": 1}
+      ]
+    }
+  ],
+  "metadata": {
+    "lastUpdate": "2024-02-25T15:30:00Z",
+    "version": "1.0.0",
+    "totalDungeons": 3,
+    "maxPlayerLevel": 50,
+    "rewards": {
+      "tierMultipliers": {
+        "normal": 1.0,
+        "elite": 1.5,
+        "legendary": 2.0
+      }
+    }
+  }
+}

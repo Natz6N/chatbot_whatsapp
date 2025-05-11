@@ -1,0 +1,136 @@
+{
+  "data": [
+    {
+      "question": "Apa ibu kota Indonesia?",
+      "answer": "Jakarta",
+      "options": ["Surabaya", "Jakarta", "Bandung", "Medan"],
+      "category": "geografi"
+    },
+    {
+      "question": "Siapa presiden pertama Indonesia?",
+      "answer": "Soekarno",
+      "options": ["Soeharto", "Soekarno", "Habibie", "Megawati"],
+      "category": "sejarah"
+    },
+    {
+      "question": "Berapa jumlah provinsi di Indonesia saat ini?",
+      "answer": "38",
+      "options": ["33", "34", "36", "38"],
+      "category": "geografi"
+    },
+    {
+      "question": "Pulau terbesar di Indonesia adalah?",
+      "answer": "Papua",
+      "options": ["Jawa", "Sumatera", "Kalimantan", "Papua"],
+      "category": "geografi"
+    },
+    {
+      "question": "Siapakah penemu gravitasi?",
+      "answer": "Isaac Newton",
+      "options": ["Albert Einstein", "Isaac Newton", "Galileo Galilei", "Nikola Tesla"],
+      "category": "sains"
+    },
+    {
+      "question": "Tahun berapa Indonesia merdeka?",
+      "answer": "1945",
+      "options": ["1942", "1945", "1949", "1950"],
+      "category": "sejarah"
+    },
+    {
+      "question": "Planet terdekat dengan matahari adalah?",
+      "answer": "Merkurius",
+      "options": ["Venus", "Bumi", "Mars", "Merkurius"],
+      "category": "sains"
+    },
+    {
+      "question": "Apa nama mata uang Jepang?",
+      "answer": "Yen",
+      "options": ["Yuan", "Won", "Yen", "Ringgit"],
+      "category": "umum"
+    },
+    {
+      "question": "Siapakah penulis novel 'Harry Potter'?",
+      "answer": "J.K. Rowling",
+      "options": ["J.R.R. Tolkien", "J.K. Rowling", "Stephen King", "Dan Brown"],
+      "category": "hiburan"
+    },
+    {
+      "question": "Apa simbol kimia untuk emas?",
+      "answer": "Au",
+      "options": ["Ag", "Fe", "Au", "Cu"],
+      "category": "sains"
+    },
+    {
+      "question": "Siapakah pelukis 'Mona Lisa'?",
+      "answer": "Leonardo da Vinci",
+      "options": ["Pablo Picasso", "Vincent van Gogh", "Leonardo da Vinci", "Michelangelo"],
+      "category": "seni"
+    },
+    {
+      "question": "Hewan apa yang menjadi simbol negara Amerika Serikat?",
+      "answer": "Elang botak",
+      "options": ["Singa", "Elang botak", "Harimau", "Beruang"],
+      "category": "umum"
+    },
+    {
+      "question": "Sungai terpanjang di dunia adalah?",
+      "answer": "Nil",
+      "options": ["Amazon", "Nil", "Yangtze", "Mississippi"],
+      "category": "geografi"
+    },
+    {
+      "question": "Kapan Perang Dunia II berakhir?",
+      "answer": "1945",
+      "options": ["1942", "1945", "1947", "1950"],
+      "category": "sejarah"
+    },
+    {
+      "question": "Berapakah jumlah benua di dunia?",
+      "answer": "7",
+      "options": ["5", "6", "7", "8"],
+      "category": "geografi"
+    },
+    {
+      "question": "Apa ibu kota Australia?",
+      "answer": "Canberra",
+      "options": ["Sydney", "Melbourne", "Perth", "Canberra"],
+      "category": "geografi"
+    },
+    {
+      "question": "Siapakah penemu bola lampu?",
+      "answer": "Thomas Edison",
+      "options": ["Alexander Graham Bell", "Thomas Edison", "Nikola Tesla", "Benjamin Franklin"],
+      "category": "sains"
+    },
+    {
+      "question": "Gunung tertinggi di dunia adalah?",
+      "answer": "Everest",
+      "options": ["Kilimanjaro", "K2", "Everest", "Fuji"],
+      "category": "geografi"
+    },
+    {
+      "question": "Apa film animasi pertama Disney yang dirilis?",
+      "answer": "Snow White and the Seven Dwarfs",
+      "options": ["Pinocchio", "Snow White and the Seven Dwarfs", "Bambi", "Cinderella"],
+      "category": "hiburan"
+    },
+    {
+      "question": "Siapa penemu telepon?",
+      "answer": "Alexander Graham Bell",
+      "options": ["Thomas Edison", "Alexander Graham Bell", "Albert Einstein", "Nikola Tesla"],
+      "category": "sains"
+    }
+  ],
+  "metadata": {
+    "lastUpdate": "2024-02-25T15:30:00Z",
+    "version": "1.0.0",
+    "totalQuestions": 20,
+    "categories": ["geografi", "sejarah", "sains", "umum", "hiburan", "seni"],
+    "difficulty": "medium",
+    "points": {
+      "correct": 10,
+      "incorrect": 0
+    },
+    "timeLimit": 30
+  }
+}

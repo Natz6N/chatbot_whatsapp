@@ -1,0 +1,143 @@
+{
+  "players": {
+    "6281234567890": {
+      "name": "Natzsixn",
+      "level": 10,
+      "exp": 1500,
+      "health": 100,
+      "maxHealth": 100,
+      "mana": 50,
+      "maxMana": 50,
+      "attack": 25,
+      "defense": 18,
+      "speed": 12,
+      "inventory": {
+        "gold": 1500,
+        "items": [
+          {
+            "id": "sword_1",
+            "name": "Iron Sword",
+            "type": "weapon",
+            "attack": 15,
+            "durability": 100,
+            "quantity": 1
+          },
+          {
+            "id": "health_potion",
+            "name": "Health Potion",
+            "type": "consumable",
+            "restore": 50,
+            "quantity": 5
+          }
+        ]
+      },
+      "skills": [
+        {
+          "id": "slash",
+          "name": "Slash",
+          "damage": 10,
+          "manaCost": 5,
+          "cooldown": 2
+        },
+        {
+          "id": "heal",
+          "name": "Heal",
+          "restore": 20,
+          "manaCost": 10,
+          "cooldown": 3
+        }
+      ],
+      "quests": [
+        {
+          "id": "quest_1",
+          "name": "Defeat the Goblin",
+          "status": "completed"
+        },
+        {
+          "id": "quest_2",
+          "name": "Find the Lost Sword",
+          "status": "in_progress"
+        }
+      ],
+      "stats": {
+        "monstersKilled": 50,
+        "questsCompleted": 5,
+        "deaths": 2,
+        "playtime": 3600
+      },
+      "lastLogin": "2024-02-25T15:30:00Z"
+    },
+    "6287654321098": {
+      "name": "SkyDev",
+      "level": 8,
+      "exp": 1200,
+      "health": 90,
+      "maxHealth": 90,
+      "mana": 40,
+      "maxMana": 40,
+      "attack": 20,
+      "defense": 15,
+      "speed": 14,
+      "inventory": {
+        "gold": 1200,
+        "items": [
+          {
+            "id": "bow_1",
+            "name": "Hunter's Bow",
+            "type": "weapon",
+            "attack": 12,
+            "durability": 100,
+            "quantity": 1
+          },
+          {
+            "id": "mana_potion",
+            "name": "Mana Potion",
+            "type": "consumable",
+            "restore": 30,
+            "quantity": 3
+          }
+        ]
+      },
+      "skills": [
+        {
+          "id": "arrow_shot",
+          "name": "Arrow Shot",
+          "damage": 15,
+          "manaCost": 3,
+          "cooldown": 1
+        },
+        {
+          "id": "fire_arrow",
+          "name": "Fire Arrow",
+          "damage": 25,
+          "manaCost": 8,
+          "cooldown": 4
+        }
+      ],
+      "quests": [
+        {
+          "id": "quest_1",
+          "name": "Defeat the Goblin",
+          "status": "completed"
+        }
+      ],
+      "stats": {
+        "monstersKilled": 35,
+        "questsCompleted": 3,
+        "deaths": 1,
+        "playtime": 2400
+      },
+      "lastLogin": "2024-02-24T18:45:00Z"
+    }
+  },
+  "metadata": {
+    "lastUpdate": "2024-02-25T15:30:00Z",
+    "version": "1.0.0",
+    "totalPlayers": 2,
+    "gameSettings": {
+      "xpMultiplier": 1.0,
+      "goldMultiplier": 1.0,
+      "difficultyLevel": "normal"
+    }
+  }
+}

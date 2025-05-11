@@ -1,0 +1,62 @@
+{
+  "bot": {
+    "sessionName": "oblixn-session",
+    "botName": "Oblixn Bot",
+    "prefix": "!",
+    "status": true,
+    "version": "1.0.0",
+    "owner": [
+      "628123456789",
+      "6281234567890"
+    ],
+    "startTime": "2024-02-25T00:00:00Z",
+    "description": "WhatsApp bot dengan berbagai fitur menarik",
+    "commands": {
+      "total": 50,
+      "categories": [
+        "general",
+        "utility",
+        "fun",
+        "ai",
+        "admin",
+        "owner",
+        "group",
+        "download",
+        "search"
+      ]
+    },
+    "maintenance": false,
+    "serverConfig": {
+      "maxConnections": 5,
+      "maxMemoryUsage": "1GB",
+      "autoRestart": true
+    }
+  },
+  "lang": {
+    "id": "id",
+    "en": "en",
+    "es": "es",
+    "fr": "fr",
+    "de": "de",
+    "it": "it",
+    "ja": "ja",
+    "ko": "ko",
+    "pt": "pt",
+    "ru": "ru",
+    "ar": "ar",
+    "hi": "hi",
+    "nl": "nl",
+    "tr": "tr",
+    "vi": "vi",
+    "zh": "zh"
+  },
+  "api": {
+    "gemini": "",
+    "openai": "",
+    "weather": "",
+    "maps": "",
+    "translate": "",
+    "youtube": "",
+    "instagram": ""
+  }
+}

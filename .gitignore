@@ -1,0 +1,33 @@
+# Sessions
+sessions/
+auth_info_baileys/
+*.session.json
+creds.json
+pre-key-*
+sender-key-*
+app-state-sync-key-*
+multi-device-*
+baileys_store_*
+/store/
+Oblivinx_bot_Db_1
+# Logs
+logs/
+!logs/.gitkeep
+*.log
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+*.env.local
+.npmrc
+
+# Temporary Files
+temp/
+!temp/.gitkeep
