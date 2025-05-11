@@ -145,9 +145,16 @@ async function checkAIUsage(userId) {
 }
 
 const normalizeJid = (jid) => {
-  if (!jid) return "";
-  const normalized = jid.split(":")[0].split("@")[0];
-  return normalized;
+  if (!jid || typeof jid !== 'string') return "";
+  
+  // Bersihkan dari bagian device, server, dan pastikan hanya angka
+  const cleanNumber = jid.split(":")[0].split("@")[0].replace(/[^0-9]/g, "");
+  
+  // Jika setelah dibersihkan masih kosong, return string kosong
+  if (!cleanNumber || cleanNumber.length < 5) return "";
+  
+  // Kembalikan format lengkap untuk konsistensi
+  return cleanNumber;
 };
 
 const getGroupAdminInfo = async (sock, groupId) => {

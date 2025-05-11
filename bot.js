@@ -44,6 +44,7 @@ const os = require("os");
 const { messageQueue } = require("./src/utils/messageQueue");
 const messageHandlers = require("./src/utils/messageHandlers");
 const { startPeriodicCleanup } = require("./src/utils/cleaner");
+const { cleanupInvalidBotInstances } = require("./database/confLowDb/lowdb");
 process.env.PREFIX = process.env.PREFIX?.trim() || "!";
 // Define the path to the ASCII file
 const asciiFilePath = path.join(__dirname, "database", "ascii.txt");
@@ -502,37 +503,35 @@ const initBot = async () => {
         credsUpdate: saveCreds,
         messagesUpsert: async (m) => {
           try {
-            if (isReconnecting) return;
-            if (!m.messages || !m.messages[0]) return;
-            const msg = m.messages[0];
+            const { messages } = m;
+            if (!messages || !messages[0]) return;
+            
+            const msg = messages[0];
+            if (!msg.message || msg.key.fromMe) return;
+            
+            const sender = msg.key.remoteJid;
+            if (!sender) {
+              botLogger.warn("Pesan diabaikan: sender tidak valid");
+              return;
+            }
+            
+            // Tambahkan definisi effectiveSock
             const effectiveSock = sock || activeSocket;
-
+            
             if (!effectiveSock) {
               botLogger.error("No valid socket available in messagesUpsert");
               return;
             }
-
-            if (msg.key.fromMe) {
-              botLogger.info("Mengabaikan pesan dari bot sendiri.");
+            
+            const isGroup = sender.endsWith("@g.us");
+            const participant = msg.key.participant || msg.participant || sender;
+            
+            // Validasi participant
+            if (!participant) {
+              botLogger.warn("Pesan diabaikan: participant tidak valid");
               return;
             }
-
-            if (global.botActive === false) {
-              if (
-                !global.Oblixn.isOwner(msg.key.participant || msg.key.remoteJid)
-              ) {
-                botLogger.info(
-                  "Bot dalam status nonaktif, pesan diabaikan (bukan owner)."
-                );
-                return;
-              }
-              botLogger.info("Pesan dari owner diterima meskipun bot off.");
-            }
-
-            const sender = msg.key.remoteJid;
-            const isGroup = sender.endsWith("@g.us");
-            const participant =
-              msg.key.participant || msg.participant || sender;
+            
             const messageText =
               msg.message?.conversation ||
               msg.message?.extendedTextMessage?.text ||
@@ -549,25 +548,38 @@ const initBot = async () => {
             // Normalisasi userId dan groupId
             const userId = normalizeJid(participant);
             const groupId = isGroup ? normalizeJid(sender) : null;
+            
+            // Tambahan validasi userId
+            if (!userId || userId.trim() === '') {
+              botLogger.warn(`Pesan diabaikan: userId tidak valid (${participant})`);
+              return;
+            }
 
             // Periksa apakah ini adalah notifikasi perubahan grup
             if (msg.messageStubType) {
               return; // Hentikan pemrosesan pesan lebih lanjut untuk notifikasi
             }
 
-            const xpResult = await leveling.trackActivityXP(
-              userId,
-              groupId,
-              "message",
-              1,
-              effectiveSock
-            );
-
-            if (xpResult.user?.leveledUp) {
-              botLogger.info(
-                `User ${userId} leveled up from ${xpResult.user.oldLevel} to ${xpResult.user.newLevel}`
+            // Proses XP dengan error handling
+            try {
+              const xpResult = await leveling.trackActivityXP(
+                userId,
+                groupId,
+                "message",
+                1,
+                effectiveSock
               );
+
+              if (xpResult && xpResult.user && xpResult.user.leveledUp) {
+                botLogger.info(
+                  `User ${userId} leveled up from ${xpResult.user.oldLevel} to ${xpResult.user.newLevel}`
+                );
+              }
+            } catch (xpError) {
+              // Tangani error XP tanpa menghentikan pemrosesan pesan
+              botLogger.error(`Error tracking XP: ${xpError.message}`);
             }
+            
             // Otomatis membuat atau memperbarui group (jika pesan dari grup)
             if (isGroup) {
               let groupData = await db.getGroup(groupId);
@@ -1392,6 +1404,12 @@ const commandHandler = (text) => {
     // Inisialisasi database terlebih dahulu
     await db.initializeDatabase();
 
+    // Bersihkan bot anak yang tidak valid sebelum inisialisasi child bot
+    const cleanupResult = await cleanupInvalidBotInstances();
+    if (cleanupResult && cleanupResult.removed > 0) {
+      botLogger.info(`Removed ${cleanupResult.removed} invalid bot anak from database.`);
+    }
+
     // Inisialisasi bot utama
     const mainBot = await initBot();
     if (!mainBot) {
@@ -1459,3 +1477,7 @@ function initializeMessageQueue() {
     `Processing up to ${messageQueue.maxConcurrentProcessing} messages concurrently`
   );
 }
+
+module.exports = {
+  startChildBot
+};

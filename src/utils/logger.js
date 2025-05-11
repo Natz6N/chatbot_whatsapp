@@ -91,7 +91,6 @@ const startupFormat = winston.format.printf(({ level, message, timestamp }) => {
   } else if (message.includes('INITIALIZING')) {
     colorCode = 'brightYellow';
   } else if (message.includes('ASCII Art:')) {
-    // Don't colorize ASCII art, just return it as is
     return message.replace('ASCII Art: ', '');
   }
   
@@ -145,13 +144,13 @@ const customFormat = winston.format.combine(
   })
 );
 
-// Logger utama bot dengan fitur rotasi dan pembatasan ukuran file
+// Logger utama bot dengan satu file log utama (bot.log)
 const botLogger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: customFormat,
   defaultMeta: { service: 'whatsapp-bot' },
   transports: [
-    // Log debug dan semua level di atasnya ke console
+    // Log ke console
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
@@ -159,25 +158,14 @@ const botLogger = winston.createLogger({
       ),
       level: 'debug'
     }),
-    
-    // Log errors ke file terpisah
+    // Semua log ke satu file utama
     new winston.transports.File({
-      filename: path.join(logDir, 'error.log'),
-      level: 'error',
-      maxsize: 10 * 1024 * 1024, // 10 MB
-      maxFiles: 5,
-      tailable: true
-    }),
-    
-    // Semua log ke file combined
-    new winston.transports.File({
-      filename: path.join(logDir, 'combined.log'),
+      filename: path.join(logDir, 'bot.log'),
       maxsize: 20 * 1024 * 1024, // 20 MB
       maxFiles: 10,
       tailable: true
     })
   ],
-  // Tidak exit pada uncaught exceptions
   exitOnError: false
 });
 
@@ -249,7 +237,7 @@ botLogger.sanitizeAndLog = function(level, message, data = {}) {
   botLogger.log(level, message, sanitize(data));
 };
 
-// Create Baileys logger instance
+// Logger Baileys juga diarahkan ke file utama yang sama
 const baileysLogger = winston.createLogger({
   levels: logLevels.levels,
   level: isDebugEnabled ? 'debug' : 'error',
@@ -266,11 +254,7 @@ const baileysLogger = winston.createLogger({
       silent: !isLoggingEnabled
     }),
     new winston.transports.File({
-      filename: path.join(logDir, 'baileys-error.log'),
-      level: 'error'
-    }),
-    new winston.transports.File({
-      filename: path.join(logDir, 'baileys.log'),
+      filename: path.join(logDir, 'bot.log'),
       silent: !isLoggingEnabled && true
     })
   ]
@@ -337,7 +321,7 @@ const toggleLogging = (enable) => {
       if (t instanceof winston.transports.Console) {
         t.silent = !isLoggingEnabled;
       }
-      if (t instanceof winston.transports.File && t.filename !== path.join(logDir, 'error.log')) {
+      if (t instanceof winston.transports.File && t.filename !== path.join(logDir, 'bot.log')) {
         t.silent = !isLoggingEnabled;
       }
     });
@@ -346,7 +330,7 @@ const toggleLogging = (enable) => {
       if (t instanceof winston.transports.Console) {
         t.silent = !isLoggingEnabled;
       }
-      if (t instanceof winston.transports.File && t.filename !== path.join(logDir, 'baileys-error.log')) {
+      if (t instanceof winston.transports.File && t.filename !== path.join(logDir, 'bot.log')) {
         t.silent = !isLoggingEnabled;
       }
     });
@@ -571,13 +555,6 @@ const logStartup = (message, type = 'info') => {
   const formattedMessage = isAsciiArt ? `ASCII Art: ${message}` : message;
   
   // // Always log to console with special formatting
-  // console.log(winston.format.combine(
-  //   startupFormat
-  // ).transform({ 
-  //   level: type, 
-  //   message: formattedMessage 
-  // }).message);
-  
   // Also log to file with normal formatting
   logToFile(message, type);
 };

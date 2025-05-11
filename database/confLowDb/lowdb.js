@@ -86,7 +86,23 @@ async function readDatabase() {
       }
     }
     await fs.writeFile(`${dbFile}.backup`, cleanedData, 'utf8');
-    return JSON.parse(cleanedData);
+    const parsed = JSON.parse(cleanedData);
+    // PATCH: pastikan struktur utama selalu ada
+    if (!parsed.users) parsed.users = [];
+    if (!parsed.groups) parsed.groups = [];
+    if (!parsed.bot_instances) parsed.bot_instances = [];
+    if (!parsed.banned_users) parsed.banned_users = [];
+    if (!parsed.orders) parsed.orders = [];
+    if (!parsed.user_activity_logs) parsed.user_activity_logs = [];
+    if (!parsed.leaderboard) parsed.leaderboard = [];
+    if (!parsed.group_settings) parsed.group_settings = [];
+    if (!parsed.bot_qr_codes) parsed.bot_qr_codes = [];
+    if (!parsed.user_leveling) parsed.user_leveling = [];
+    if (!parsed.user_activities) parsed.user_activities = [];
+    if (!parsed.guilds) parsed.guilds = [];
+    if (!parsed.user_achievements) parsed.user_achievements = [];
+    if (!parsed.level_roles) parsed.level_roles = [];
+    return parsed;
   } catch (error) {
     log('Error reading database: ' + error.message, 'error');
     return {
@@ -111,6 +127,20 @@ async function readDatabase() {
 // Fungsi internal untuk menulis data ke file JSON
 async function writeDatabase(data) {
   try {
+    if (!data.users) data.users = [];
+    if (!data.groups) data.groups = [];
+    if (!data.bot_instances) data.bot_instances = [];
+    if (!data.banned_users) data.banned_users = [];
+    if (!data.orders) data.orders = [];
+    if (!data.user_activity_logs) data.user_activity_logs = [];
+    if (!data.leaderboard) data.leaderboard = [];
+    if (!data.group_settings) data.group_settings = [];
+    if (!data.bot_qr_codes) data.bot_qr_codes = [];
+    if (!data.user_leveling) data.user_leveling = [];
+    if (!data.user_activities) data.user_activities = [];
+    if (!data.guilds) data.guilds = [];
+    if (!data.user_achievements) data.user_achievements = [];
+    if (!data.level_roles) data.level_roles = [];
     await fs.writeFile(dbFile, JSON.stringify(data, null, 2), "utf8");
     log(`Database written successfully to ${dbFile}`, 'info');
     return true;
@@ -1076,6 +1106,32 @@ async function unbanUser(userId) {
   }
 }
 
+// Fungsi untuk menghapus bot anak yang tidak valid (tidak ada credentials atau auth)
+async function cleanupInvalidBotInstances() {
+  try {
+    const data = await readDatabase();
+    const before = data.bot_instances.length;
+    data.bot_instances = data.bot_instances.filter(bot => {
+      if (!bot.credentials) return false;
+      try {
+        const creds = JSON.parse(bot.credentials);
+        return creds && creds.creds && creds.keys;
+      } catch (e) {
+        return false;
+      }
+    });
+    const after = data.bot_instances.length;
+    if (after < before) {
+      await writeDatabase(data);
+      log(`Cleaned up ${before - after} invalid bot anak from database.`, 'info');
+    }
+    return { removed: before - after };
+  } catch (error) {
+    log('Error cleaning up invalid bot anak: ' + error.message, 'error');
+    throw error;
+  }
+}
+
 initializeDatabase().catch((err) => {
   console.error("Failed to initialize database on module load:", err);
   process.exit(1);
@@ -1110,4 +1166,5 @@ module.exports = {
   readDatabase,
   writeDatabase,
   addUserXP,
+  cleanupInvalidBotInstances,
 };

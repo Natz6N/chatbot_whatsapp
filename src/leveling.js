@@ -10,52 +10,113 @@ function getRequiredXP(level) {
 
 // Fungsi untuk normalisasi ID (menghilangkan @s.whatsapp.net)
 function normalizeUserId(userId) {
-  if (!userId) return null;
-  return userId.split('@')[0];
+  if (!userId || typeof userId !== 'string') return null;
+  
+  // Jika userId kosong setelah trim, return null
+  if (userId.trim() === '') return null;
+  
+  // Bersihkan dari bagian device, server, dan pastikan hanya angka
+  const cleanNumber = userId.split(":")[0].split("@")[0].replace(/[^0-9]/g, "");
+  
+  // Validasi: minimal panjang 5 digit untuk nomor yang valid
+  if (!cleanNumber || cleanNumber.length < 5) return null;
+  
+  return cleanNumber;
 }
 
-// Fungsi untuk mendapatkan data user dari database; jika belum ada, buat dengan nilai default
+// Fungsi untuk mendapatkan data user dari database
 async function getUserData(userId) {
   try {
     if (!userId || typeof userId !== 'string' || userId.trim() === '') {
-      throw new Error('Invalid userId: must be a non-empty string');
+      botLogger.warn('getUserData: userId kosong atau tidak valid, skip.');
+      return null;
     }
     
     const normalizedId = normalizeUserId(userId);
     if (!normalizedId) {
-      throw new Error('Invalid userId: failed to normalize');
+      botLogger.warn('getUserData: userId gagal dinormalisasi.');
+      return null; // Return null instead of throwing error
     }
     
-    let userData = await db.getUser(normalizedId);
-    if (!userData) {
-      // Jika user belum ada, tambahkan dengan default
-      const result = await db.addUser({
-        user_id: normalizedId,
-        username: null,
-        level: 1,
-        experience: 0,
-        total_messages: 0
-      });
-      userData = result;
+    try {
+      // Coba ambil data user
+      let userData = await db.getUser(normalizedId);
+      
+      // Jika user belum ada, buat baru
+      if (!userData) {
+        botLogger.info(`getUserData: Membuat user baru: ${normalizedId}`);
+        
+        try {
+          const newUser = {
+            user_id: normalizedId,
+            username: null,
+            level: 1,
+            experience: 0,
+            total_messages: 0,
+            total_xp: 0,
+            daily_xp: 0,
+            weekly_xp: 0
+          };
+          
+          const result = await db.addUser(newUser);
+          userData = result;
+          
+          if (!userData) {
+            botLogger.warn(`getUserData: Gagal membuat user baru: ${normalizedId}`);
+            return null;
+          }
+        } catch (addError) {
+          botLogger.error(`getUserData: Error saat membuat user baru (${normalizedId}): ${addError.message}`);
+          return null;
+        }
+      }
+      
+      return userData;
+    } catch (dbError) {
+      botLogger.error(`getUserData: Database error untuk userId ${normalizedId}: ${dbError.message}`);
+      return null;
     }
-    return userData;
   } catch (error) {
-    console.error('Error in getUserData:', error);
-    throw error;
+    botLogger.error(`getUserData: Unexpected error: ${error.message}`);
+    return null; // Return null instead of throwing to prevent crashes
   }
 }
 
 // Fungsi untuk menambah XP user dan menangani proses level up
 async function addXP(userId, xpToAdd, sock = null, groupId = null) {
   try {
-    // Normalisasi ID
-    const normalizedId = normalizeUserId(userId);
-    if (!normalizedId) {
-      botLogger.error("Invalid userId for addXP");
-      throw new Error("Invalid user ID");
+    // Validasi userId
+    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+      botLogger.warn('addXP: userId kosong atau tidak valid, skip XP.');
+      return null;
     }
     
-    const userData = await getUserData(normalizedId);
+    // Validasi xpToAdd
+    if (typeof xpToAdd !== 'number' || isNaN(xpToAdd) || xpToAdd <= 0) {
+      botLogger.warn(`addXP: xpToAdd tidak valid (${xpToAdd}), skip XP.`);
+      return null;
+    }
+    
+    // Normalisasi ID (seharusnya sudah dinormalisasi dari pemanggilan sebelumnya)
+    if (normalizeUserId(userId) !== userId) {
+      botLogger.warn(`addXP: userId ${userId} belum dinormalisasi dengan benar, menormalisasi ulang.`);
+      userId = normalizeUserId(userId);
+      
+      // Cek lagi setelah normalisasi
+      if (!userId) {
+        botLogger.error("Invalid userId for addXP after normalization");
+        return null; // Return null daripada throw error untuk mencegah crash
+      }
+    }
+    
+    // Dapatkan data user dari database
+    const userData = await getUserData(userId);
+    if (!userData) {
+      botLogger.warn(`addXP: Tidak dapat menemukan data untuk user ${userId}`);
+      return null;
+    }
+    
+    // Update nilai XP
     userData.experience = (userData.experience || 0) + xpToAdd;
     userData.total_xp = (userData.total_xp || 0) + xpToAdd;
     userData.daily_xp = (userData.daily_xp || 0) + xpToAdd;
@@ -72,11 +133,11 @@ async function addXP(userId, xpToAdd, sock = null, groupId = null) {
       newLevel += 1;
       leveledUp = true;
       requiredXP = getRequiredXP(newLevel);
-      botLogger.info(`User ${normalizedId} naik ke level ${newLevel}`);
+      botLogger.info(`User ${userId} naik ke level ${newLevel}`);
     }
 
     // Perbarui data user di database
-    await db.updateUser(normalizedId, {
+    await db.updateUser(userId, {
       experience: userData.experience,
       level: newLevel,
       total_xp: userData.total_xp,
@@ -92,7 +153,7 @@ async function addXP(userId, xpToAdd, sock = null, groupId = null) {
       
       // Cek achievement setelah level up
       if (global.Oblixn && global.Oblixn.checkAchievements) {
-        await global.Oblixn.checkAchievements(normalizedId, 'level');
+        await global.Oblixn.checkAchievements(userId, 'level');
       }
     }
 
@@ -187,6 +248,28 @@ async function addGroupXP(groupId, xpToAdd, sock = null) {
 // Fungsi untuk melacak aktivitas dan memberikan XP
 async function trackActivityXP(userId, groupId, activityType, amount = 1, sock = null) {
   try {
+    // Validasi userId dengan ketat
+    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+      botLogger.warn('trackActivityXP: userId kosong atau tidak valid, skip XP.');
+      return { user: null, group: null };
+    }
+
+    // Normalisasi userId
+    const normalizedId = normalizeUserId(userId);
+    if (!normalizedId) {
+      botLogger.warn(`trackActivityXP: userId tidak valid setelah normalisasi (${userId}), skip XP.`);
+      return { user: null, group: null };
+    }
+
+    // Validasi groupId jika ada
+    let normalizedGroupId = null;
+    if (groupId) {
+      normalizedGroupId = normalizeUserId(groupId);
+      if (!normalizedGroupId) {
+        botLogger.warn(`trackActivityXP: groupId tidak valid setelah normalisasi (${groupId}), gunakan null.`);
+      }
+    }
+    
     // Tentukan XP berdasarkan jenis aktivitas
     let xpAmount = 0;
     
@@ -212,16 +295,16 @@ async function trackActivityXP(userId, groupId, activityType, amount = 1, sock =
     
     // Lacak aktivitas untuk achievement
     if (global.Oblixn && global.Oblixn.trackUserActivity) {
-      await global.Oblixn.trackUserActivity(userId, activityType, amount);
+      await global.Oblixn.trackUserActivity(normalizedId, activityType, amount);
     }
     
     // Tambah XP user
-    const userResult = await addXP(userId, xpAmount, sock, groupId);
+    const userResult = await addXP(normalizedId, xpAmount, sock, normalizedGroupId);
     
     // Tambah XP grup jika dalam grup
     let groupResult = null;
-    if (groupId) {
-      groupResult = await addGroupXP(groupId, Math.floor(xpAmount / 2), sock);
+    if (normalizedGroupId) {
+      groupResult = await addGroupXP(normalizedGroupId, Math.floor(xpAmount / 2), sock);
     }
     
     return {
@@ -304,7 +387,7 @@ function setupMessageHandler(sock) {
 
 // Helper untuk format pesan leaderboard
 function formatLeaderboardMessage(leaderboard, senderId = null) {
-  let leaderboardMsg = `🏆 *LEADERBOARD* 🏆\n\n`;
+  let leaderboardMsg = `�� *LEADERBOARD* 🏆\n\n`;
   leaderboard.forEach((user, index) => {
     let position;
     if (index === 0) position = '🥇';

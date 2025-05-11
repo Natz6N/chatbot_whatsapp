@@ -1,0 +1,58 @@
+// Fungsi untuk mendapatkan data user dari database
+async function getUserData(userId) {
+  try {
+    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+      botLogger.warn('getUserData: userId kosong atau tidak valid, skip.');
+      return null;
+    }
+    
+    // Normalisasi userId
+    const normalizedId = normalizeUserId(userId);
+    if (!normalizedId) {
+      botLogger.warn('getUserData: userId gagal dinormalisasi.');
+      return null; // Return null instead of throwing error
+    }
+    
+    try {
+      // Coba ambil data user
+      let userData = await db.getUser(normalizedId);
+      
+      // Jika user belum ada, buat baru
+      if (!userData) {
+        botLogger.info(`getUserData: Membuat user baru: ${normalizedId}`);
+        
+        try {
+          const newUser = {
+            user_id: normalizedId,
+            username: null,
+            level: 1,
+            experience: 0,
+            total_messages: 0,
+            total_xp: 0,
+            daily_xp: 0,
+            weekly_xp: 0
+          };
+          
+          const result = await db.addUser(newUser);
+          userData = result;
+          
+          if (!userData) {
+            botLogger.warn(`getUserData: Gagal membuat user baru: ${normalizedId}`);
+            return null;
+          }
+        } catch (addError) {
+          botLogger.error(`getUserData: Error saat membuat user baru (${normalizedId}): ${addError.message}`);
+          return null;
+        }
+      }
+      
+      return userData;
+    } catch (dbError) {
+      botLogger.error(`getUserData: Database error untuk userId ${normalizedId}: ${dbError.message}`);
+      return null;
+    }
+  } catch (error) {
+    botLogger.error(`getUserData: Unexpected error: ${error.message}`);
+    return null; // Return null instead of throwing to prevent crashes
+  }
+} 
