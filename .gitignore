@@ -14,6 +14,9 @@ Oblivinx_bot_Db_1
 logs/
 !logs/.gitkeep
 *.log
+cookie.json
+nodemoon.json
+test.jpg
 
 # Dependencies
 node_modules/
