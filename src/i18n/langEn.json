@@ -1,22 +1,85 @@
-
 {
     "logs": {
-      "error":{
-        "errorS": "Error",
-        "description": "Terjadi kesalahan pada sistem"
+      "error": {
+        "error1": "Error: Command must have a valid pattern and handler",
+        "error2": "Error: Database system encountered an issue",
+        "error3": "Error: Connection to server lost",
+        "error4": "Error: Input validation failed",
+        "error5": "Error: Requested file not found or corrupted",
+        "error6": "Error: User authentication failed",
+        "error7": "Error: Rate limit exceeded, please try again later",
+        "error8": "Error: Data format is invalid",
+        "error9": "Error: Unable to load visual assets",
+        "error10": "Error: Unable to read configuration file"
       },
       "warn": {
         "title": "Warning",
-        "description": "Terjadi peringatan pada sistem"
+        "description": "System detected conditions requiring attention",
+        "lowMemory": "Warning: Memory usage approaching maximum limit",
+        "highCpu": "Warning: CPU usage is very high",
+        "slowResponse": "Warning: Server response slower than usual",
+        "invalidInput": "Warning: Input format does not meet requirements"
       },
       "info": {
-        "runCommand": "Menjalankan command: ${command} dengan args: ${args.join(``)}",
-        "description": "Informasi pada sistem"
+        "runCommand": "Executing command: ${command} with parameters: ${args.join(``)}",
+        "description": "System information",
+        "userLogin": "User ${username} successfully logged into the system",
+        "userLogout": "User ${username} successfully logged out of the system",
+        "fileUpload": "Successfully uploaded file: ${filename}",
+        "dataSync": "Data synchronization completed successfully",
+        "backup": "System backup created successfully",
+        "update": "System successfully updated to version ${version}",
+        "rpg": {
+          "profile": "📋 *Character Profile*\n\nName: ${name}\nClass: ${className}\nLevel: ${level}\nGold: ${gold}\nHealth: ${hp}/${maxHp}\nEnergy: ${mp}/${maxMp}\nStamina: ${stamina}/${maxStamina}",
+          "inventory": "🎒 *Inventory*\n\nCapacity: ${weight}/${maxWeight}\n\n*Items:*\n${items}\n\n*Equipment:*\nWeapon: ${weapon}\nArmor: ${armor}\nAccessory: ${accessory}"
+        }
       },
       "debug": {
         "title": "Debug",
-        "description": "Debugging pada sistem"
-      } 
+        "description": "System debug information",
+        "database": {
+          "query": "Executing database query: ${query}",
+          "connection": "Database connection status: ${status}",
+          "performance": "Query execution time: ${time}ms"
+        },
+        "cache": {
+          "hit": "Cache hit for key: ${key}",
+          "miss": "Cache miss for key: ${key}",
+          "clear": "Cache successfully cleared"
+        },
+        "api": {
+          "request": "Sending API request to ${endpoint}",
+          "response": "Received response from ${endpoint}: ${status}",
+          "latency": "API response time: ${time}ms"
+        }
+      }
+    },
+    "success": {
+      "title": "Success",
+      "operationComplete": "Operation completed successfully",
+      "dataSaved": "Data saved successfully",
+      "configUpdated": "Configuration updated successfully"
+    },
+    "system": {
+      "startup": "System is initializing",
+      "shutdown": "System is shutting down safely",
+      "maintenance": "System is in maintenance mode",
+      "status": {
+        "online": "System is active and ready to use",
+        "offline": "System is currently inactive",
+        "partial": "Some system services are currently unavailable"
+      }
+    },
+    "connection": {
+      "connecting": "Connecting to WhatsApp server...",
+      "connected": "Successfully connected to WhatsApp server",
+      "disconnected": "Disconnected from WhatsApp server",
+      "reconnecting": "Attempting to reconnect...",
+      "loginSuccess": "Successfully logged into WhatsApp",
+      "loginFailed": "Failed to log into WhatsApp",
+      "qrReceived": "QR code received, please scan with your WhatsApp app",
+      "heartbeat": "Connection is stable",
+      "heartbeatFailed": "Connection is unstable"
     }
   }
   

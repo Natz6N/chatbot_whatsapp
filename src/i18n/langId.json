@@ -1,118 +1,234 @@
 {
   "logs": {
     "error": {
-      "error1": "Command harus memiliki pattern dan handler",
-      "error2": "Terjadi kesalahan pada sistem database",
-      "error3": "Terjadi kesalahan pada koneksi server",
-      "error4": "Terjadi kesalahan pada validasi input",
-      "error5": "File tidak ditemukan atau rusak",
-      "error6": "Kesalahan autentikasi pengguna",
-      "error7": "Rate limit terlampaui",
-      "error8": "Format data tidak valid",
-      "error9": "Tidak dapat membaca ascii art",
-      "error10": "Tidak dapat membaca file config"
+      "error1": "Kesalahan: Command harus memiliki pattern dan handler yang valid",
+      "error2": "Kesalahan: Terjadi masalah pada sistem database",
+      "error3": "Kesalahan: Koneksi ke server terputus",
+      "error4": "Kesalahan: Input tidak dapat divalidasi",
+      "error5": "Kesalahan: File yang diminta tidak ditemukan atau rusak",
+      "error6": "Kesalahan: Otentikasi pengguna gagal",
+      "error7": "Kesalahan: Batas penggunaan layanan terlampaui, mohon coba lagi nanti",
+      "error8": "Kesalahan: Format data tidak sesuai",
+      "error9": "Kesalahan: Tidak dapat memuat aset visual",
+      "error10": "Kesalahan: Tidak dapat membaca file konfigurasi"
     },
     "warn": {
-      "title": "Warning",
-      "description": "Terjadi peringatan pada sistem",
-      "lowMemory": "Penggunaan memori tinggi",
-      "highCpu": "Penggunaan CPU tinggi",
-      "slowResponse": "Respon server lambat",
-      "invalidInput": "Input tidak sesuai format yang diharapkan"
+      "title": "Peringatan",
+      "description": "Sistem mendeteksi kondisi yang memerlukan perhatian",
+      "lowMemory": "Peringatan: Penggunaan memori mendekati batas maksimum",
+      "highCpu": "Peringatan: Penggunaan CPU sangat tinggi",
+      "slowResponse": "Peringatan: Respons server lebih lambat dari biasanya",
+      "invalidInput": "Peringatan: Format input tidak sesuai ketentuan"
     },
     "info": {
-      "runCommand": "Menjalankan command: ${command} dengan args: ${args.join(``)}",
-      "description": "Informasi pada sistem",
-      "userLogin": "Pengguna ${username} telah login",
-      "userLogout": "Pengguna ${username} telah logout",
-      "fileUpload": "File ${filename} berhasil diunggah",
-      "dataSync": "Sinkronisasi data selesai",
-      "backup": "Backup sistem berhasil dibuat",
+      "runCommand": "Menjalankan perintah: ${command} dengan parameter: ${args.join(``)}",
+      "description": "Informasi sistem",
+      "userLogin": "Pengguna ${username} berhasil masuk ke sistem",
+      "userLogout": "Pengguna ${username} berhasil keluar dari sistem",
+      "fileUpload": "Berhasil mengunggah file: ${filename}",
+      "dataSync": "Sinkronisasi data berhasil diselesaikan",
+      "backup": "Pencadangan sistem berhasil dibuat",
       "update": "Sistem berhasil diperbarui ke versi ${version}",
       "rpg": {
-        "profile": "📋 *Profil Karakter*\n\nNama: ${name}\nKelas: ${className}\nLevel: ${level}\nGold: ${gold}\nHP: ${hp}/${maxHp}\nMP: ${mp}/${maxMp}\nStamina: ${stamina}/${maxStamina}",
-        "inventory": "🎒 *Inventory*\n\nBerat: ${weight}/${maxWeight}\n\n*Items:*\n${items}\n\n*Equipment:*\nWeapon: ${weapon}\nArmor: ${armor}\nAccessory: ${accessory}"
+        "profile": "📋 *Profil Karakter*\n\nNama: ${name}\nKelas: ${className}\nLevel: ${level}\nKoin: ${gold}\nKesehatan: ${hp}/${maxHp}\nEnergi: ${mp}/${maxMp}\nStamina: ${stamina}/${maxStamina}",
+        "inventory": "🎒 *Inventaris*\n\nKapasitas: ${weight}/${maxWeight}\n\n*Barang:*\n${items}\n\n*Perlengkapan:*\nSenjata: ${weapon}\nBaju Zirah: ${armor}\nAksesoris: ${accessory}"
       }
     },
     "debug": {
       "title": "Debug",
-      "description": "Debugging pada sistem",
+      "description": "Informasi debug sistem",
       "database": {
-        "query": "Menjalankan query: ${query}",
+        "query": "Menjalankan kueri database: ${query}",
         "connection": "Status koneksi database: ${status}",
-        "performance": "Waktu eksekusi query: ${time}ms"
+        "performance": "Waktu eksekusi kueri: ${time}ms"
       },
       "cache": {
-        "hit": "Cache hit untuk key: ${key}",
-        "miss": "Cache miss untuk key: ${key}",
-        "clear": "Cache dibersihkan"
+        "hit": "Cache ditemukan untuk kunci: ${key}",
+        "miss": "Cache tidak ditemukan untuk kunci: ${key}",
+        "clear": "Cache berhasil dibersihkan"
       },
       "api": {
-        "request": "Request API ke ${endpoint}",
-        "response": "Response dari ${endpoint}: ${status}",
-        "latency": "Latensi API: ${time}ms"
+        "request": "Mengirim permintaan API ke ${endpoint}",
+        "response": "Menerima respons dari ${endpoint}: ${status}",
+        "latency": "Waktu respons API: ${time}ms"
       }
     },
     "success": {
-      "title": "Sukses",
+      "title": "Berhasil",
       "operationComplete": "Operasi berhasil diselesaikan",
       "dataSaved": "Data berhasil disimpan",
       "configUpdated": "Konfigurasi berhasil diperbarui"
     },
     "system": {
-      "startup": "Sistem sedang dimulai",
-      "shutdown": "Sistem sedang dimatikan",
-      "maintenance": "Sistem dalam mode pemeliharaan",
+      "startup": "Sistem sedang diinisialisasi",
+      "shutdown": "Sistem sedang dimatikan dengan aman",
+      "maintenance": "Sistem sedang dalam masa pemeliharaan",
       "status": {
-        "online": "Sistem online",
-        "offline": "Sistem offline",
-        "partial": "Sebagian layanan tidak tersedia"
+        "online": "Sistem aktif dan siap digunakan",
+        "offline": "Sistem sedang tidak aktif",
+        "partial": "Beberapa layanan sistem sedang tidak tersedia"
       }
+    },
+    "connection": {
+      "connecting": "Menghubungkan ke server WhatsApp...",
+      "connected": "Berhasil terhubung ke server WhatsApp",
+      "disconnected": "Terputus dari server WhatsApp",
+      "reconnecting": "Mencoba menghubungkan kembali...",
+      "loginSuccess": "Berhasil masuk ke WhatsApp",
+      "loginFailed": "Gagal masuk ke WhatsApp",
+      "qrReceived": "Kode QR telah diterima, silakan pindai dengan aplikasi WhatsApp",
+      "heartbeat": "Koneksi stabil",
+      "heartbeatFailed": "Koneksi tidak stabil"
     }
   },
   "bot": {
-    "opening": "hello everyone! im oblivinx bot",
-    "welcome": "welcome to oblivinx bot! please enjoy the services available.",
-    "bug": "if you encounter any bugs, please do not hesitate to reach out to the contacts listed.",
-    "contribute": "you can also contribute to the development of this bot by forking our repository on github and submitting a pull request.",
-    "thankyou": "thank you for using oblivinx bot, hope it helps! 🚀",
-    "contact": "=========================== Contact Developer ============================",
-    "name": "Name ${process.env.OWNER1_NAME || 'Natz'}",
-    "phone": "Phone ${process.env.PHONE_NUMBER || '081910058235'}",
-    "email": "Email ${process.env.OWNER1_EMAIL || 'nat0zxn99@gmail.com'}",
-    "github": "GitHub ${process.env.OWNER1_GITHUB || 'https://github.com/maousamaNatz'}",
-    "instagram": "Instagram ${process.env.OWNER1_INSTAGRAM || 'patch.cpp'}",
-    "version": "Version ${process.env.OWNER1_VERSION || '1.0.0'}",
-    "author": "Author ${process.env.OWNER1_AUTHOR || 'Natz'}",
-    "license": "License ${process.env.OWNER1_LICENSE || 'MIT'}",
-    "description": "Description ${process.env.OWNER1_DESCRIPTION || 'Oblivinx Bot is a multi-functional bot that can help you with various tasks.'}",
-    "contribute": "you can also contribute to the development of this bot by forking our repository on github and submitting a pull request.",
-    "thankyou": "thank you for using oblivinx bot, hope it helps! 🚀",
-    "contact": "=========================== Contact Developer ============================"
+    "opening": "Selamat datang di Oblivinx Bot!",
+    "welcome": "Terima kasih telah menggunakan Oblivinx Bot. Kami siap membantu Anda dengan berbagai fitur menarik yang tersedia.",
+    "bug": "Jika Anda menemukan masalah, mohon laporkan kepada kami melalui kontak yang tersedia.",
+    "contribute": "Anda dapat berkontribusi pada pengembangan bot ini dengan melakukan fork repositori kami di GitHub dan mengirimkan pull request.",
+    "thankyou": "Terima kasih telah menggunakan Oblivinx Bot, semoga bermanfaat! 🚀",
+    "contact": "=========================== Kontak Pengembang ============================",
+    "name": "Nama: ${process.env.OWNER1_NAME || 'Natz'}",
+    "phone": "Telepon: ${process.env.PHONE_NUMBER || '081910058235'}",
+    "email": "Email: ${process.env.OWNER1_EMAIL || 'nat0zxn99@gmail.com'}",
+    "github": "GitHub: ${process.env.OWNER1_GITHUB || 'https://github.com/maousamaNatz'}",
+    "instagram": "Instagram: ${process.env.OWNER1_INSTAGRAM || 'patch.cpp'}",
+    "version": "Versi: ${process.env.OWNER1_VERSION || '1.0.0'}",
+    "author": "Pembuat: ${process.env.OWNER1_AUTHOR || 'Natz'}",
+    "license": "Lisensi: ${process.env.OWNER1_LICENSE || 'MIT'}",
+    "description": "Deskripsi: ${process.env.OWNER1_DESCRIPTION || 'Oblivinx Bot adalah bot multifungsi yang dapat membantu Anda dengan berbagai tugas.'}",
+    "contribute": "Anda dapat berkontribusi pada pengembangan bot ini dengan melakukan fork repositori kami di GitHub dan mengirimkan pull request.",
+    "thankyou": "Terima kasih telah menggunakan Oblivinx Bot, semoga bermanfaat! 🚀",
+    "contact": "=========================== Kontak Pengembang ============================"
   },
   "commands": {
+    "general": {
+      "help": "Menampilkan bantuan tentang perintah yang tersedia",
+      "menu": "Menampilkan menu utama bot",
+      "info": "Menampilkan informasi tentang bot",
+      "ping": "Memeriksa respons bot",
+      "owner": "Menampilkan informasi pemilik bot"
+    },
+    "admin": {
+      "ban": "Melarang pengguna menggunakan bot",
+      "unban": "Mengizinkan kembali pengguna yang dilarang",
+      "promote": "Menaikkan status pengguna menjadi admin grup",
+      "demote": "Menurunkan status admin grup"
+    },
+    "group": {
+      "add": "Menambahkan anggota ke grup",
+      "kick": "Mengeluarkan anggota dari grup",
+      "groupinfo": "Menampilkan informasi grup",
+      "setname": "Mengubah nama grup",
+      "setdesc": "Mengubah deskripsi grup",
+      "tagall": "Menandai semua anggota grup"
+    },
+    "media": {
+      "sticker": "Membuat stiker dari gambar atau video",
+      "image": "Mengubah stiker menjadi gambar",
+      "toimg": "Mengubah stiker menjadi gambar",
+      "ytmp3": "Mengunduh audio dari YouTube",
+      "ytmp4": "Mengunduh video dari YouTube"
+    },
+    "tools": {
+      "translate": "Menerjemahkan teks ke bahasa lain",
+      "tts": "Mengubah teks menjadi suara",
+      "calculator": "Menghitung ekspresi matematika",
+      "weather": "Menampilkan informasi cuaca"
+    },
+    "fun": {
+      "meme": "Menampilkan meme acak",
+      "joke": "Menampilkan lelucon acak",
+      "quote": "Menampilkan kutipan acak",
+      "fact": "Menampilkan fakta acak"
+    },
     "rpg": {
-      "createchar": "Buat karakter baru dengan format: !createchar <nama> <kelas>\nKelas yang tersedia: warrior, mage, assassin, archer",
+      "createchar": "Membuat karakter baru dengan format: !createchar <nama> <kelas>\nKelas yang tersedia: warrior, mage, assassin, archer",
       "profile": "Menampilkan profil karakter",
       "battle": "Memulai pertarungan dengan monster",
-      "skill": "Menggunakan skill dalam pertarungan",
-      "inventory": "Menampilkan inventory karakter"
+      "skill": "Menggunakan kemampuan dalam pertarungan",
+      "inventory": "Menampilkan inventaris karakter",
+      "shop": "Mengunjungi toko untuk membeli item",
+      "sell": "Menjual item yang dimiliki",
+      "quest": "Melihat atau mengambil misi",
+      "daily": "Mengklaim hadiah harian",
+      "leaderboard": "Melihat papan peringkat pemain"
     }
   },
   "errors": {
+    "general": {
+      "command_not_found": "Perintah tidak ditemukan. Ketik !help untuk melihat daftar perintah.",
+      "permission_denied": "Anda tidak memiliki izin untuk menggunakan perintah ini.",
+      "cooldown": "Mohon tunggu ${time} detik sebelum menggunakan perintah ini lagi.",
+      "bot_offline": "Bot sedang dalam mode offline, hanya pemilik yang dapat menggunakan perintah."
+    },
+    "group": {
+      "not_group": "Perintah ini hanya dapat digunakan di dalam grup.",
+      "not_admin": "Anda harus menjadi admin grup untuk menggunakan perintah ini.",
+      "bot_not_admin": "Bot harus menjadi admin grup untuk menggunakan perintah ini."
+    },
+    "media": {
+      "invalid_url": "URL tidak valid.",
+      "download_failed": "Gagal mengunduh media.",
+      "conversion_failed": "Gagal mengonversi media."
+    },
     "rpg": {
-      "no_character": "Kamu belum memiliki karakter! Gunakan !createchar untuk membuat karakter baru.",
+      "no_character": "Anda belum memiliki karakter! Gunakan !createchar untuk membuat karakter baru.",
       "invalid_class": "Kelas tidak valid! Kelas yang tersedia: warrior, mage, assassin, archer",
-      "in_battle": "Kamu sedang dalam pertarungan! Gunakan !attack untuk menyerang.",
-      "skill_fail": "Gagal menggunakan skill! Pastikan MP cukup dan skill tersedia."
+      "in_battle": "Anda sedang dalam pertarungan! Gunakan !attack untuk menyerang.",
+      "skill_fail": "Gagal menggunakan kemampuan! Pastikan energi cukup dan kemampuan tersedia.",
+      "insufficient_gold": "Emas tidak mencukupi untuk transaksi ini.",
+      "insufficient_items": "Item tidak cukup untuk melakukan tindakan ini.",
+      "level_requirement": "Level karakter Anda terlalu rendah. Diperlukan level ${level}."
+    }
+  },
+  "success": {
+    "general": {
+      "command_executed": "Perintah berhasil dijalankan.",
+      "settings_updated": "Pengaturan berhasil diperbarui."
+    },
+    "group": {
+      "member_added": "Berhasil menambahkan anggota ke grup.",
+      "member_removed": "Berhasil mengeluarkan anggota dari grup.",
+      "group_settings_updated": "Pengaturan grup berhasil diperbarui."
+    },
+    "media": {
+      "sticker_created": "Stiker berhasil dibuat.",
+      "media_converted": "Media berhasil dikonversi.",
+      "download_complete": "Unduhan selesai."
     }
   },
   "guides": {
+    "general": {
+      "bot_usage": "Untuk menggunakan bot, ketik perintah diawali dengan prefix '!'. Contoh: !help",
+      "premium_features": "Fitur premium tersedia untuk pengguna yang telah berlangganan."
+    },
     "rpg": {
-      "character_created": "Karakter berhasil dibuat!\nNama: ${name}\nKelas: ${className}\nHP: ${hp}\nMP: ${mp}\nStamina: ${stamina}",
-      "battle_start": "Pertarungan dimulai!\nMusuh: ${enemyName} (Level ${level})\nHP: ${hp}/${maxHp}\nAttack: ${attack}\nDefense: ${defense}",
-      "victory": "Kamu menang!\nMendapatkan ${exp} EXP dan ${gold} Gold!",
-      "defeat": "Kamu kalah dalam pertarungan!"
+      "character_created": "Karakter berhasil dibuat!\nNama: ${name}\nKelas: ${className}\nKesehatan: ${hp}\nEnergi: ${mp}\nStamina: ${stamina}",
+      "battle_start": "Pertarungan dimulai!\nLawan: ${enemyName} (Level ${level})\nKesehatan: ${hp}/${maxHp}\nSerangan: ${attack}\nPertahanan: ${defense}",
+      "victory": "Anda menang!\nMendapatkan ${exp} EXP dan ${gold} emas!",
+      "defeat": "Anda kalah dalam pertarungan! Anda kehilangan ${gold} emas.",
+      "level_up": "Selamat! Karakter Anda naik ke level ${level}!\nKesehatan +${hpBonus}\nEnergi +${mpBonus}\nStamina +${staminaBonus}",
+      "item_purchased": "Berhasil membeli ${itemName} seharga ${cost} emas.",
+      "item_sold": "Berhasil menjual ${itemName} dan mendapatkan ${gold} emas.",
+      "quest_accepted": "Anda menerima misi: ${questName}\nTujuan: ${objective}\nHadiah: ${rewards}"
     }
+  },
+  "notifications": {
+    "update": "Bot telah diperbarui ke versi ${version}! Gunakan !changelog untuk melihat perubahan.",
+    "maintenance": "Bot akan memasuki mode pemeliharaan pada ${time}. Estimasi waktu pemeliharaan: ${duration} menit.",
+    "event": "Event ${eventName} sedang berlangsung! Gunakan !event untuk informasi lebih lanjut.",
+    "welcome": "Selamat datang, ${name}! Terima kasih telah menggunakan Oblivinx Bot.",
+    "premium_expiry": "Status premium Anda akan berakhir dalam ${days} hari. Gunakan !renew untuk memperpanjang."
+  },
+  "jadibot": {
+    "success": "Bot anak berhasil dibuat dan terhubung.",
+    "pairing_code": "Kode pairing untuk bot anak: ${code}",
+    "scan_qr": "Silakan pindai kode QR untuk menghubungkan bot anak.",
+    "already_exists": "Nomor tersebut sudah terdaftar sebagai bot anak.",
+    "connection_lost": "Koneksi bot anak terputus. Mencoba menghubungkan kembali...",
+    "reconnected": "Bot anak berhasil terhubung kembali.",
+    "deleted": "Bot anak berhasil dihapus.",
+    "limit_reached": "Batas maksimum bot anak telah tercapai."
   }
 }

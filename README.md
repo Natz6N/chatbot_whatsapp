@@ -12,7 +12,7 @@ Hello, I'm Natz! This is my project, Baileys Bot, a bot developed using the Bail
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/baileys-bot.git
+   git clone https://github.com/Natz6N/chatbot_whatsapp.git
    ```
 
 2. Navigate to the project directory:

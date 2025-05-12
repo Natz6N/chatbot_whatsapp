@@ -49,6 +49,16 @@ process.env.PREFIX = process.env.PREFIX?.trim() || "!";
 // Define the path to the ASCII file
 const asciiFilePath = path.join(__dirname, "database", "ascii.txt");
 
+// Konstanta untuk heartbeat dan stabilitas koneksi
+const HEARTBEAT_INTERVAL = 60000; // 60 detik
+const PING_TIMEOUT = 15000; // 15 detik
+const CONNECTION_KEEP_ALIVE_INTERVAL = 30000; // 30 detik
+let heartbeatInterval = null;
+let connectionActive = false;
+let lastHeartbeatResponse = Date.now();
+let authState = null;
+let authStateInitialized = false;
+
 // Jika MessageType belum didefinisikan dari library, definisikan manual
 if (!MessageType) {
   const MessageType = {
@@ -429,6 +439,44 @@ async function withRateLimit(key, operation) {
   }
 }
 
+// Fungsi untuk mengirim heartbeat ping untuk menjaga koneksi tetap aktif
+async function sendHeartbeat(sock) {
+  if (!sock || !sock.user) {
+    botLogger.warn("Heartbeat skipped: Socket tidak aktif atau belum login");
+    return;
+  }
+  
+  try {
+    // Coba kirim pesan ke diri sendiri sebagai heartbeat
+    botLogger.debug("Mengirim heartbeat ping...");
+    const selfJid = sock.user.id;
+    
+    // Ping server dengan cara yang lebih ringan (query status metadata)
+    const result = await Promise.race([
+      sock.profilePictureUrl(selfJid, 'image'), 
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Ping timeout')), PING_TIMEOUT))
+    ]);
+    
+    lastHeartbeatResponse = Date.now();
+    botLogger.debug("Heartbeat berhasil, koneksi aktif");
+    
+    // Jika status koneksi sebelumnya inactive, update
+    if (!connectionActive) {
+      connectionActive = true;
+      botLogger.info("Koneksi telah aktif kembali");
+    }
+  } catch (error) {
+    const timeSinceLastResponse = Date.now() - lastHeartbeatResponse;
+    botLogger.warn(`Heartbeat gagal: ${error.message}, waktu sejak respon terakhir: ${timeSinceLastResponse/1000}s`);
+    
+    // Jika tidak ada respon dalam 3x interval, set connectionActive = false
+    if (timeSinceLastResponse > HEARTBEAT_INTERVAL * 3) {
+      connectionActive = false;
+      botLogger.error("Koneksi tampaknya mati, akan mencoba reconnect pada event disconnection berikutnya");
+    }
+  }
+}
+
 const initBot = async () => {
   if (activeSocket && activeSocket.user) {
     botLogger.info("Session utama sudah login, melewati inisialisasi ulang.");
@@ -459,6 +507,13 @@ const initBot = async () => {
           activeSocket.ws.close();
           activeSocket.ev.removeAllListeners();
         }
+        
+        // Stop heartbeat before reconnecting
+        if (heartbeatInterval) {
+          clearInterval(heartbeatInterval);
+          heartbeatInterval = null;
+        }
+        
         await initBot();
       } catch (error) {
         botLogger.error("Gagal melakukan reconnect:", error);
@@ -482,25 +537,71 @@ const initBot = async () => {
               `Connection closed: ${statusCode} - ${errorMessage}`,
               { statusCode, errorMessage }
             );
-            if (statusCode === 515 && sock.user) {
-              botLogger.warn(
-                "Stream error 515 with active session, skipping reconnect"
-              );
+            
+            // Hentikan heartbeat saat koneksi tertutup
+            if (heartbeatInterval) {
+              clearInterval(heartbeatInterval);
+              heartbeatInterval = null;
+              botLogger.info("Heartbeat dihentikan karena koneksi terputus");
+            }
+            
+            // Tambahkan special handling untuk berbagai tipe error
+            if (statusCode === DisconnectReason.connectionClosed) {
+              botLogger.warn("Koneksi ditutup oleh server, mencoba reconnect...");
+              handleReconnect();
               return;
             }
+            
+            if (statusCode === DisconnectReason.connectionLost) {
+              botLogger.warn("Koneksi hilang, mencoba reconnect...");
+              handleReconnect();
+              return;
+            }
+            
+            if (statusCode === DisconnectReason.connectionReplaced) {
+              botLogger.warn("Koneksi digantikan oleh session baru, menghentikan session lama");
+              return; // Tidak perlu reconnect karena session baru sudah ada
+            }
+            
+            if (statusCode === 515 && sock.user) {
+              botLogger.warn(
+                "Stream error 515 with active session, melakukan re-init socket..."
+              );
+              handleReconnect();
+              return;
+            }
+            
             const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
             if (shouldReconnect && !isReconnecting) {
               handleReconnect();
             } else if (statusCode === DisconnectReason.loggedOut) {
-              botLogger.warn("Logged out, please scan new QR code");
-              setTimeout(handleReconnect, RECONNECT_INTERVAL);
+              botLogger.warn("Logged out, mencoba untuk menghubungkan kembali dengan authState yang ada");
+              
+              // Jangan hapus auth state - tetapi coba gunakan yang ada untuk reconnect
+              setTimeout(handleReconnect, RECONNECT_INTERVAL * 2);
             }
           } else if (connection === "open") {
             botLogger.info(`Connected as ${sock.user?.id || "unknown"}`);
             resetReconnectState();
+            connectionActive = true;
+            lastHeartbeatResponse = Date.now();
+            
+            // Mulai heartbeat saat koneksi terbuka
+            if (!heartbeatInterval) {
+              heartbeatInterval = setInterval(() => sendHeartbeat(sock), HEARTBEAT_INTERVAL);
+              botLogger.info(`Heartbeat interval dimulai (setiap ${HEARTBEAT_INTERVAL/1000}s)`);
+            }
           }
         },
-        credsUpdate: saveCreds,
+        credsUpdate: async (creds) => {
+          // Pastikan selalu simpan credentials sesegera mungkin
+          try {
+            await saveCreds();
+            botLogger.debug("Credentials berhasil disimpan");
+          } catch (error) {
+            botLogger.error(`Error saving credentials: ${error.message}`);
+          }
+        },
         messagesUpsert: async (m) => {
           try {
             const { messages } = m;
@@ -1040,17 +1141,20 @@ const initBot = async () => {
       sock._eventHandlers = handlers;
     };
 
-    const { state, saveCreds } = await useMultiFileAuthState(
-      "auth_info_baileys"
-    );
+    // Gunakan auth state singleton kita untuk inisialisasi
+    const { state, saveCreds } = await getAuthState();
     activeSocket = makeWASocket({
       auth: state,
       printQRInTerminal: true,
       logger: baileysLogger,
       browser: ["Oblivinx Bot", "Chrome", "1.0.0"],
       connectTimeoutMs: CONNECTION_TIMEOUT,
-      keepAliveIntervalMs: 30000,
+      keepAliveIntervalMs: CONNECTION_KEEP_ALIVE_INTERVAL,
       retryRequestDelayMs: 5000,
+      mobile: false, // Gunakan mode desktop untuk mengurangi kemungkinan logout
+      markOnlineOnConnect: true, // Mark as online untuk mengurangi logouts
+      generateHighQualityLinkPreview: false, // Nonaktifkan fitur yang mungkin menyebabkan overhead
+      syncFullHistory: false, // Hindari sinkronisasi history penuh saat startup
     });
 
     socketInstance = activeSocket;
@@ -1157,12 +1261,78 @@ function setupGlobalErrorHandlers() {
           }
         }, RETRY_INTERVAL);
       }
+    } else if (reason.message?.includes("Stream Errored") || 
+               reason.message?.includes("Connection Closed") ||
+               reason.message?.includes("closed") ||
+               reason.message?.includes("WebSocket")) {
+      // WebSocket/connection issues, handle gracefully
+      botLogger.warn(`WebSocket/Connection error detected: ${reason.message}`);
+      if (activeSocket && activeSocket.user) {
+        botLogger.info("Attempting to keep session alive...");
+        try {
+          // Force a simple operation to keep connection
+          sendHeartbeat(activeSocket);
+        } catch (e) {
+          botLogger.error(`Failed to send heartbeat: ${e.message}`);
+        }
+      }
     } else {
       botLogger.error(
         "Unhandled rejection at " + promise + " reason: " + reason,
         { promise, reason }
       );
     }
+  });
+  
+  // Handle SIGINT dan keluar dengan baik
+  process.on('SIGINT', async () => {
+    botLogger.info('Received SIGINT signal, shutting down gracefully...');
+    
+    // Hentikan heartbeat
+    if (heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+      heartbeatInterval = null;
+    }
+    
+    // Tutup koneksi untuk semua bot anak
+    if (global.childBots) {
+      for (const [number, sock] of global.childBots.entries()) {
+        try {
+          botLogger.info(`Closing connection for child bot ${number}...`);
+          if (sock.ws) sock.ws.close();
+          if (sock.ev) sock.ev.removeAllListeners();
+        } catch (error) {
+          botLogger.warn(`Error closing child bot ${number}: ${error.message}`);
+        }
+      }
+    }
+    
+    // Tutup koneksi utama
+    try {
+      if (activeSocket) {
+        botLogger.info('Closing main bot connection...');
+        if (activeSocket.ws) activeSocket.ws.close();
+        if (activeSocket.ev) activeSocket.ev.removeAllListeners();
+      }
+    } catch (error) {
+      botLogger.warn(`Error closing main socket: ${error.message}`);
+    }
+    
+    // Simpan state jika perlu
+    try {
+      if (authState && authState.saveCreds) {
+        botLogger.info('Saving final credentials...');
+        await authState.saveCreds();
+      }
+    } catch (error) {
+      botLogger.warn(`Error saving final credentials: ${error.message}`);
+    }
+    
+    // Keluar setelah 1 detik
+    setTimeout(() => {
+      botLogger.info('Exiting...');
+      process.exit(0);
+    }, 1000);
   });
 }
 
@@ -1225,26 +1395,97 @@ async function initializeAllBots() {
 // Implementasi untuk startChildBot yang digunakan di initializeAllBots
 async function startChildBot(phoneNumber, credentials) {
   try {
+    const authFolder = path.join(__dirname, `sessions/${phoneNumber}`);
+    
+    // Periksa apakah folder ada, buat jika tidak
+    if (!fs.existsSync(authFolder)) {
+      fs.mkdirSync(authFolder, { recursive: true });
+    }
+    
+    // Siapkan auth state dengan yang ada atau buat baru
+    let state, saveCreds;
     if (!credentials || !credentials.creds) {
       botLogger.warn(
-        `No valid credentials for ${phoneNumber}, initializing empty state`
+        `No valid credentials for ${phoneNumber}, initializing fresh state`
       );
-      const authFolder = path.join(__dirname, `sessions/${phoneNumber}`);
-      if (!fs.existsSync(authFolder)) {
-        fs.mkdirSync(authFolder, { recursive: true });
-      }
-      const { state } = await useMultiFileAuthState(authFolder);
-      credentials = state;
+      const authResult = await useMultiFileAuthState(authFolder);
+      state = authResult.state;
+      saveCreds = authResult.saveCreds;
+    } else {
+      // Gunakan credentials yang diberikan, tapi wrap dengan fungsi state/save yang benar
+      state = credentials;
+      saveCreds = async () => {
+        // Simpan credentials ke folder dan database
+        try {
+          const { state: freshState } = await useMultiFileAuthState(authFolder);
+          
+          // Update credentials di database
+          db.getBotInstances()
+            .then(async (bots) => {
+              const bot = bots.find((b) => b.number === phoneNumber);
+              if (bot) {
+                bot.credentials = JSON.stringify(freshState);
+                bot.updated_at = new Date().toISOString();
+                await db
+                  .writeDatabase({ bot_instances: bots })
+                  .catch((err) =>
+                    botLogger.error(
+                      `Error updating bot credentials: ${err.message}`
+                    )
+                  );
+              }
+            })
+            .catch((err) =>
+              botLogger.error(`Error getting bot instances: ${err.message}`)
+            );
+        } catch (error) {
+          botLogger.error(`Error saving child bot creds: ${error.message}`);
+        }
+      };
     }
 
     const childSocket = makeWASocket({
-      auth: credentials,
+      auth: state,
       printQRInTerminal: true,
       logger: baileysLogger,
       browser: ["Oblivinx Child Bot", "Chrome", "1.0.0"],
       connectTimeoutMs: CONNECTION_TIMEOUT,
-      keepAliveIntervalMs: 15000,
+      keepAliveIntervalMs: CONNECTION_KEEP_ALIVE_INTERVAL,
+      mobile: false, // Use desktop mode
+      markOnlineOnConnect: true,
+      generateHighQualityLinkPreview: false,
+      syncFullHistory: false,
     });
+
+    // Child bot heartbeat tracker
+    let childHeartbeatInterval = null;
+    let childLastHeartbeatResponse = Date.now();
+    let childConnectionActive = false;
+
+    // Fungsi heartbeat khusus untuk child bot
+    const sendChildHeartbeat = async () => {
+      if (!childSocket || !childSocket.user) {
+        botLogger.warn(`Child bot ${phoneNumber} heartbeat skipped: Socket tidak aktif`);
+        return;
+      }
+      
+      try {
+        const selfJid = childSocket.user.id;
+        await Promise.race([
+          childSocket.profilePictureUrl(selfJid, 'image'),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Ping timeout')), PING_TIMEOUT))
+        ]);
+        
+        childLastHeartbeatResponse = Date.now();
+        childConnectionActive = true;
+      } catch (error) {
+        const timeSinceLastResponse = Date.now() - childLastHeartbeatResponse;
+        if (timeSinceLastResponse > HEARTBEAT_INTERVAL * 3) {
+          childConnectionActive = false;
+          botLogger.warn(`Child bot ${phoneNumber} koneksi tampaknya mati`);
+        }
+      }
+    };
 
     // Set up basic event handlers
     childSocket.ev.on("connection.update", (update) => {
@@ -1264,13 +1505,63 @@ async function startChildBot(phoneNumber, credentials) {
 
       if (connection === "close") {
         const statusCode = lastDisconnect?.error?.output?.statusCode;
+        const errorMessage = lastDisconnect?.error?.message || "Unknown error";
         botLogger.info(
-          `Child bot ${phoneNumber} connection closed with status: ${statusCode}`
+          `Child bot ${phoneNumber} connection closed with status ${statusCode}: ${errorMessage}`
         );
+        
+        // Stop heartbeat
+        if (childHeartbeatInterval) {
+          clearInterval(childHeartbeatInterval);
+          childHeartbeatInterval = null;
+        }
+        
+        // Reconnect untuk statusCode yang bukan logout
+        if (statusCode !== DisconnectReason.loggedOut) {
+          setTimeout(async () => {
+            botLogger.info(`Attempting to reconnect child bot ${phoneNumber}...`);
+            try {
+              // Refresh auth state
+              if (global.childBots) {
+                global.childBots.delete(phoneNumber);
+              }
+              await startChildBot(phoneNumber, state);
+            } catch (reconnectError) {
+              botLogger.error(`Failed to reconnect child bot ${phoneNumber}: ${reconnectError.message}`);
+            }
+          }, RECONNECT_INTERVAL);
+        } else {
+          botLogger.warn(`Child bot ${phoneNumber} logged out, marking as inactive in database`);
+          // Update status bot di database
+          db.getBotInstances()
+            .then(async (bots) => {
+              const bot = bots.find((b) => b.number === phoneNumber);
+              if (bot) {
+                bot.status = "inactive";
+                bot.updated_at = new Date().toISOString();
+                await db
+                  .writeDatabase({ bot_instances: bots })
+                  .catch((err) =>
+                    botLogger.error(`Error updating bot status: ${err.message}`)
+                  );
+              }
+            })
+            .catch((err) =>
+              botLogger.error(`Error getting bot instances: ${err.message}`)
+            );
+        }
       } else if (connection === "open") {
         botLogger.info(`Child bot ${phoneNumber} connected successfully`);
+        childConnectionActive = true;
+        childLastHeartbeatResponse = Date.now();
+        
+        // Start heartbeat for child bot
+        if (!childHeartbeatInterval) {
+          childHeartbeatInterval = setInterval(sendChildHeartbeat, HEARTBEAT_INTERVAL);
+          botLogger.info(`Child bot ${phoneNumber} heartbeat started`);
+        }
 
-        // Update status bot di database jika perlu
+        // Update status bot di database
         db.getBotInstances()
           .then(async (bots) => {
             const bot = bots.find((b) => b.number === phoneNumber);
@@ -1290,33 +1581,15 @@ async function startChildBot(phoneNumber, credentials) {
       }
     });
 
-    // Handle credential updates
-    const saveCreds = async () => {
-      const authFolder = path.join(__dirname, `sessions/${phoneNumber}`);
-      const { state } = await useMultiFileAuthState(authFolder);
-
-      // Update credentials di database jika perlu
-      db.getBotInstances()
-        .then(async (bots) => {
-          const bot = bots.find((b) => b.number === phoneNumber);
-          if (bot) {
-            bot.credentials = JSON.stringify(state);
-            bot.updated_at = new Date().toISOString();
-            await db
-              .writeDatabase({ bot_instances: bots })
-              .catch((err) =>
-                botLogger.error(
-                  `Error updating bot credentials: ${err.message}`
-                )
-              );
-          }
-        })
-        .catch((err) =>
-          botLogger.error(`Error getting bot instances: ${err.message}`)
-        );
-    };
-
-    childSocket.ev.on("creds.update", saveCreds);
+    // Handle credential updates dengan sigap
+    childSocket.ev.on("creds.update", async () => {
+      try {
+        await saveCreds();
+        botLogger.debug(`Child bot ${phoneNumber} credentials saved`);
+      } catch (error) {
+        botLogger.error(`Error saving child bot ${phoneNumber} credentials: ${error.message}`);
+      }
+    });
 
     // Store in global map if not exists
     if (!global.childBots) {
@@ -1476,6 +1749,30 @@ function initializeMessageQueue() {
   botLogger.info(
     `Processing up to ${messageQueue.maxConcurrentProcessing} messages concurrently`
   );
+}
+
+// Fungsi untuk membuat penyimpanan auth state singleton yang persisten
+async function getAuthState() {
+  if (authState && authStateInitialized) {
+    return authState;
+  }
+  
+  try {
+    const authFolder = path.join(__dirname, "auth_info_baileys");
+    if (!fs.existsSync(authFolder)) {
+      fs.mkdirSync(authFolder, { recursive: true });
+    }
+    
+    const { state, saveCreds } = await useMultiFileAuthState(authFolder);
+    authState = { state, saveCreds };
+    authStateInitialized = true;
+    
+    botLogger.info("Auth state berhasil diinisialisasi");
+    return authState;
+  } catch (error) {
+    botLogger.error(`Error initializing auth state: ${error.message}`);
+    throw error;
+  }
 }
 
 module.exports = {
